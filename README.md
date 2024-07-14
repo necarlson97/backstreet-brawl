@@ -1,2 +1,2 @@
-# circus-roulette
-A russian-roulette board game, using a foam-dart revolver. 
+# Backstreet Brawl
+An intimate board game where poseable figurines wrestle, spit, and scratch eachother to death or disgrace.

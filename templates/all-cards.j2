@@ -6,25 +6,7 @@
 </head>
 <body>
     <button id="dark-toggle">🌞</button>
-    {% from "_card.j2" import build_card, build_life %}
-
-
-
-    <h2> Reprints </h2>
-    <div class="cards-container">
-        {% for card_type, i in Card.reprints().items() %}
-            {{  build_card(card_type, i+1) }}
-        {% endfor %}
-    </div>
-
-    <h2> Lives </h2>
-    <div class="cards-container">
-        {% for life_type in Life.sorted_types() %}
-            {% for i in range(life_type.count) %}
-                {{  build_life(life_type, i+1) }}
-            {% endfor %}
-        {% endfor %}
-    </div>
+    {% from "_card.j2" import build_card %}
 
     <h2> All Cards </h2>
     <div class="cards-container">
@@ -33,6 +15,60 @@
                 {{  build_card(card_type, i+1) }}
             {% endfor %}
         {% endfor %}
+    </div>
+
+    <div style="white-space: pre-line;">
+        <h2> Balance Totals </h2>
+        {{ Card.status_totals() }}
+    </div>
+
+    <div style="white-space: pre-line;">
+        <h2> Rules </h2>
+        {# TODO other rules #}
+        # TODO make these lose cards, because why not.
+        Could even, if I wanted, write 2, one for each player.
+
+        Oxygen Loss:
+        The muscles in your neck tense, and churn, your diaphragm writhes. Your face feels hot, pink, and saliva is pooling by your esophagus.
+        Satisfaction seems an alien planet. Struggling resignation feels like home.
+        You mouth chews dumbly. A tingle rises along the inside of each arm, a gray vignette pulls at the edge of your vision, both growing with each thump of your haggard heart.
+        A moment of dizziness bowls you over - perhaps you crash to the ground, but of that, you are unaware. All that remains is the fuzzy grayness, and even that is descending away from you. Your vision is a tight, milky cone. And then it is nothing.
+
+        Blood Loss:
+        Looking down, your vision blurs into a wet mess of red.
+        The blood streams in rivulets down your body, it sloshes in your shoes. Your little engine heart flutters and kicks, and with each frightened beat,
+        Your breath quickens. You touch a cold finger to your salty, pale lips as the color begins to drain from the world. And you collapse.
+
+        Pain Loss:
+        You try to stand back, to push away, but the pain drags you to your knees. Hot-pink and neon-green lightning races through your neurons. The feeling is white-hot. Your mind is burning.
+        Involuntarily, your nails bite into your palm.
+        You try to scream, but a wave of nausea rises from your loins, and chokes you.
+        Suddenly, the world comes into sharp relief, every vein dilating. The vasovagal syncope claws into your mind, pushing you out, pushing you into the welcome release of the dark tunnel.
+
+        Sensation Loss:
+        Your eyes snap shut, but the comforting dark behind your eyelids is missing. There you find an alarming static, an intense white-noise. A fever pitch ringing rises in your ears, drowning out the world completely.
+        "I can't..." you mouth, to no one. "I can't!"
+        Only cruel gravity and gritty palms tell you you are crawling. Your hand sweeps in-front of you, frantic - what are you searching for?
+        Then, a swift kick plows into your sternum, driving the wind out of you. Your lungs click and gape as you fall on your side, curling. In a tight fetal position, you don't hear their quieting footsteps, you don't see their smug silhouette walking away. You sense nothing. You are alone.
+
+        Focus Loss:
+        TODO - you become so befuddled, you find it hard to move
+
+        Rage Loss:
+        TODO - you give up, becoming limp
+
+        Dignity Loss:
+        Inside you, there is the sound of snapping chains. With one hand, you grope and claw, with the other, a throw a rhythmic fury of blows. Your teeth gnaw, and lips pull and curl like a rabbit dogs. Blood spatters into your eye, waking you from your debased animalism. Blinking them clear, you snap to attention, and peer down your cheeks to survey your enemy. You see one thing in their eyes:
+        Steel defiance.
+        You pull back, eyes darting, head snapping, hairs on your nape erect. A distant siren rings in you mind like the gong of apocalypse.
+        What are you doing?! You fucked up. You fucked up BIG.
+        Kicking back, you break off into a crouching run, shoes squeaking, heart in a fluttery panic. It will be a while until the sadness sets in, the regret. But you already feel its weight above you like a great thundercloud, opaque as wine-colored velvet.
+
+        Stamina Loss:
+        You scramble backwards, landing on your ares, kicking futilely to gain some distance. Your breath is hot and forceful, flapping your dry lips. Your shoulders aching, and the pain is mirrored in the hollow of your heart.
+        You try to form some words, to speak some kind of resolution, but your ragged breath cuts through everything. Weakly, you raise a palm, as if blocking yourself from the light.
+        Your head tips back, then rushes at the opportunity to lie down. You have no say in the matter, weakness drags you down, the heavy cords of gravity anchoring you to the asphalt. Laying on your side, you look up for a moment at the silhouette towering over you. You can't see their face, but you feel the pity and disgust nonetheless.
+        Your dull lead gaze returns to the spittle spattered pavement before you. You heavy breathing rocks you gently, and the lullaby of you foamy gasps cradles you to sleep.
     </div>
 
 </body>

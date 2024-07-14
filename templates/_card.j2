@@ -2,20 +2,12 @@
     <div class="card">
         <div class="card-header">
             <span class="card-name">{{ card_type.human_name() }}</span>
+            <span>{{ card_type.get_cost() }}</span>
         </div>
         <img src="images/{{ card_type.name }}-{{i}}.png" class="card-image">
         <div class="card-body">
-            <p>{{ card_type.description }}</p>
+            <span> {{ card_type.get_description() }} </span>
         </div>
         <div class="card-footer">{{ card_type.flavor_text }}</div>
-    </div>
-{% endmacro %}
-{% macro build_life(life_type, i=1) %}
-    <div class="card">
-        <div class="card-header">
-            <span class="card-name">The {{ life_type.human_name() }} </span>
-        </div>
-        <img src="images/lives/{{ life_type.name }}-{{i}}.png" class="life-image">
-        <div class="card-footer">{{ life_type.flavor_texts[i-1] }}</div>
     </div>
 {% endmacro %}

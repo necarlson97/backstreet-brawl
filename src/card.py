@@ -1,19 +1,39 @@
 from src.utils import NamedClass
+from collections import Counter
 
 import logging
-logger = logging.getLogger("HotMech")
+logger = logging.getLogger("cards")
 
 class Card(NamedClass):
     """
     Abstract class, that each specific type of card will sub-class
     Then each instance of a subclass is the individual card,
     """
-
-    # Steps defined by the subclass type.
-    # A list of 'Step' types, that get initialized
-    # to create this individual card's steps
-    description = "todo desc"
     flavor_text = "todo flavor"
+
+    # What +/- effects it has on the 8 statuses:
+    """
+        "focus": 0,
+        "rage": 0,
+        "dignity": 0,
+        "stamina": 0,
+
+        "oxygen": 0,
+        "blood": 0,
+        "pain tolerance": 0,
+        "sensation": 0,
+    """
+    your_effects = {}
+    their_effects = {}
+
+    # Moving their limb, going airborn, etc
+    extra_effects = ""
+
+    # Fist smash knee, flat palm smack face, butt below hands, etc
+    your_requirements = []
+    # Prone, >2 rage, etc
+    their_requirements = []
+
 
     # How many times does it appear in the deck?
     # TODO slightly different images?
@@ -34,226 +54,261 @@ class Card(NamedClass):
         return f"{self.name}"
 
     @classmethod
+    def get_cost(cls):
+        """
+        Return the 'cost' for this card - should ideally be
+        0 for all cards, as in their negatives balance their positives.
+
+
+        Easy to execute (touch) = 2 points to spend
+        Hard to execute (smash) = 3 points to spend
+        (Then if it costs 1-, that's another point to spend)
+        Moving limb = 3pts
+        Jumping = 2pts
+
+        "Touch = move that makes contact, from any distance away
+        Smack = move that makes contact from > a forearms length away
+        Smash = Move that makes contact from > a full limbs length away"
+        "Focus, Rage, Dignity, Stamina
+        Oxygen, Blood, Pain Tolerance, Senses
+        """
+        cost = sum(cls.your_effects.values())
+        cost -= sum(cls.their_effects.values())
+
+        req_costs = {
+            "touch": -1,
+            "smack": -2,
+            "smash": -3,
+
+            "anywhere": 1,
+        }
+        for k, v in req_costs.items():
+            if k in ", ".join(cls.your_requirements):
+                cost += v
+
+        # TODO theirs
+        return cost
+
+    @classmethod
+    def get_description(cls):
+        """
+        Return the html str of this cards description
+        """
+        # Simple helper function for +1/-1, etc
+        def status_string(item):
+            k, v = item
+            if v == 0:
+                return ""
+            sign = "" if v < 0 else "+"
+            return f"<span class='{k} status'>{sign}{v} {k}</span>"
+
+        # TODO html param/func?
+        your_string = ", ".join(
+            status_string(i) for i in cls.your_effects.items())
+        their_string = ", ".join(
+            status_string(i) for i in cls.their_effects.items())
+
+        s = ""
+        if cls.your_requirements:
+            s += f"If you {'and '.join(cls.your_requirements)}:\n"
+        if cls.their_requirements:
+            s += f"and they {'and '.join(cls.their_requirements)}:\n"
+        if your_string:
+            s += f"<hr>You get {your_string}\n"
+        if their_string:
+            s += f"<hr>They get {their_string}\n"
+
+        # Emphasize the keywords that are important for the rules
+        keywords = [
+            "smash", "smack",
+            "flat palm", "fist", "grasp hand",
+        ]
+
+        for keyword in keywords:
+            s = s.replace(keyword, f"<b class='{keyword}'>{keyword}</b>")
+
+        return s
+
+    @classmethod
     def sorted_types(cls):
         return sorted(cls.all_types.values(), key=lambda c: c.name)
 
     @classmethod
     def reprints(cls):
         return {
-            # Premonition: 2,
-            # HandOff: 0,
-            # Silence: 0,
         }
+
+    # TODO functions that will check cards to see:
+    """
+    * are they balanced
+    * what stat is easiest/hardest to lower
+    * what stats do many cards use
+    * what status do few cards use
+    """
+
+    @classmethod
+    def status_totals(cls):
+        """
+        Return a str report of how many of each status is added to
+        or taken away
+        """
+        cards = cls.all_types.values()
+        statuses = set(
+            k for c in cards for k in
+            list(c.your_effects.keys()) + list(c.their_effects.keys())
+        )
+        statuses = sorted(list(statuses))
+
+        your_plus = {
+            status: sum(
+                card.your_effects[status]
+                for card in cards
+                if card.your_effects.get(status, 0) > 0
+            )
+            for status in statuses
+        }
+        your_minus = {
+            status: sum(
+                card.your_effects[status]
+                for card in cards
+                if card.your_effects.get(status, 0) < 0
+            )
+            for status in statuses
+        }
+        their_plus = {
+            status: sum(
+                card.their_effects[status]
+                for card in cards
+                if card.their_effects.get(status, 0) > 0
+            )
+            for status in statuses
+        }
+        their_minus = {
+            status: sum(
+                card.their_effects[status]
+                for card in cards
+                if card.their_effects.get(status, 0) < 0
+            )
+            for status in statuses
+        }
+
+        def sum_up(d1, d2):
+            return {k: d1.get(k, 0) + d2.get(k, 0) for k in statuses}
+
+        your_totals = sum_up(your_plus, your_minus)
+        their_totals = sum_up(their_plus, their_minus)
+        plus_totals = sum_up(your_plus, their_plus)
+        minus_totals = sum_up(your_minus, their_minus)
+
+        all_totals = sum_up(your_totals, their_totals)
+
+        # Sanity check
+        assert all_totals == sum_up(plus_totals, minus_totals)
+
+        # TODO pretty print dicts
+        return (
+            f"Plusses on you: {your_plus}\n"
+            f"Minuses on you: {your_minus}\n"
+            f"Plusses on them: {their_plus}\n"
+            f"Minuses on them: {their_minus}\n"
+
+            "\n"
+            f"Sum on you: {your_totals}\n"
+            f"Sum on them: {their_totals}\n"
+            "\n"
+            f"All Plusses: {plus_totals}\n"
+            f"All minuses: {minus_totals}\n"
+            "\n"
+            f"Final balance: {all_totals}\n"
+        )
 
 """
 Below, all card types are defined:
 """
-class PullHarder(Card):
-    count = 2
-    description = "Gun holder shoots themself (again)"
-    flavor_text = (
-        '"Second verse, same as the first.\n'
-        'A little bit louder and a whole lot worse."'
-        '\n~ Pogo, the Clown'
-    )
+# Strikes (hit them to hurt them)
+class BloodyNose(Card):
+    your_requirements = [
+        "smash a fist into their face"
+    ]
+    your_effects = {
+        "focus": -1,
+        "rage": +1,
+    }
+    their_effects = {
+        "blood": -1,
+        "oxygen": -1,
+        "pain tolerance": -1,
+    }
 
-    def human_name():
-        return "Pull Harder!"
+class CheekSlap(Card):
+    your_requirements = [
+        "smack a flat palm into their face"
+    ]
+    their_effects = {
+        "dignity": +1,
+        "rage": -1,
+        "pain tolerance": -2,
+    }
 
-class SleightOfHand(Card):
-    count = 2
-    description = (
-        "Target player chooses a loaded round to swap with one "
-        "from their pocket"
-    )
-    flavor_text = (
-        '"Now you see it, now you... still see it.\n'
-        'But trust me, it’s not where you think it is."'
-        '\n~ The Great Vanisho'
-    )
+class FrontJab(Card):
+    your_requirements = [
+        "smack a fist into them anywhere"
+    ]
+    your_effects = {
+        "focus": -1,
+    }
+    their_effects = {
+        "stamina": -1,
+        "pain tolerance": -1,
+    }
 
-class HandOff(Card):
-    count = 2
-    description = (
-        "Force any player to take the gun"
-    )
-    flavor_text = (
-        '"Take it, take it! I insist. After all, sharing is caring...\n'
-        'especially the risk."'
-        '\n~ Lenny the Lion Tamer'
-    )
+# Psych-outs
+class TapOut(Card):
+    your_requirements = [
+        "touch a flat palm to them anywhere"
+    ]
+    your_effects = {
+        "dignity": -1,
+    }
+    their_effects = {
+        "rage": -1,
+    }
 
-class Premonition(Card):
-    count = 6
-    description = (
-        "Inspect the gun"
-    )
-    flavor_text = (
-        '"Forewarned is forearmed. Especially useful when the arms in '
-        'question are potentially deadly."'
-        '\n~ Dr. Orville'
-    )
+# Poses (stance to help yourself)
 
-class PatDown(Card):
-    count = 2
-    description = (
-        "Inspect a players pocket rounds "
-        "(just look, no pulling apart rounds)"
-    )
-    flavor_text = (
-        '"Trust is good, but checking is better.\n'
-        'Especially when the stakes are this high."'
-        '\n~ Fish Fingers'
-    )
+# Control (grab them to move them)
 
-class PickPocket(Card):
-    count = 1
-    description = (
-        "Choose a round from another pocket, swap it with one of your own"
-    )
-    flavor_text = (
-        '"What\'s yours is mine, and what\'s mine is... also mine.\n'
-        'That\'s the magic of misdirection."'
-        '\n~ Sly Simon'
-    )
-
-class Betrayal(Card):
-    count = 2
-    description = (
-        "The gun holder fires at anyone (victim can win the casing)"
-    )
-    flavor_text = (
-        '"A pie in the face, but a knife in the back."'
-        '\n~ Reverend Jester Jones'
-    )
-
-class Spin(Card):
-    count = 2
-    description = (
-        "Spin the cylinder"
-    )
-    flavor_text = (
-        '"Time to turn your luck around!"'
-        '\n~ Twirly Tina'
-    )
-
-    def human_name():
-        return "Spin!"
-
-class CeilingShot(Card):
-    count = 2
-    description = (
-        "Fire the gun into the air\n(nobody gets the casing)"
-    )
-    flavor_text = (
-        '"One for the big man upstairs!"'
-        '\n— Cannonman Carl'
-    )
-
-class VodkaShot(Card):
-    count = 1
-    description = (
-        "The next shot provides an extra casing"
-    )
-    flavor_text = (
-        'Little liquid courage to double your chances—or your regrets."'
-        '\n~ the Vagrant Virtuoso'
-    )
-
-class OneForOne(Card):
-    count = 1
-    description = (
-        "Gun holder shoots at you. Then you choose a target for "
-        "the gun holder to shoot at."
-    )
-    flavor_text = (
-        '"What goes around comes around, often faster than you expect."'
-        '\n~ Petra the Quickdraw'
-    )
-
-class Wrestle(Card):
-    count = 1
-    description = (
-        "Gun holder shoots at you. Then you get the gun."
-    )
-    flavor_text = (
-        '"Possession may be only half the story,\n'
-        'but it\'s 9/10ths of the law!"'
-        '\n— Grapple Gary, the Ground-and-Pound Clown'
-    )
-
-class Flirt(Card):
-    count = 1
-    description = (
-        "Choose a player to discard a card"
-    )
-    flavor_text = (
-        '"A wink, a smile, and oh, what\'s this?\n'
-        'You seem to have dropped something."'
-        '\n~ Felicity the Fanciful'
-    )
-
-class Clairvoyance(Card):
-    count = 4
-    description = (
-        "Inspect another player's cards"
-    )
-    flavor_text = (
-        '"The future is in your hands."'
-        '\n— The All-Seeing Salvatore'
-    )
-
-class PublicShaming(Card):
-    count = 2
-    description = (
-        "Target player reveals their hand to all others"
-    )
-    flavor_text = (
-        '"A little exposure keeps everyone honest, '
-        'embarrassed, and entertained!"'
-        '\n~ Madame Blush'
-    )
-
-class Silence(Card):
-    count = 2
-    description = (
-        "Cancel a card"
-    )
-    flavor_text = (
-        '"..."'
-        '\n— Marx, the Mime'
-    )
-
-class BiteBullet(Card):
-    count = 2
-    description = (
-        "Gun holder shoots themselves, but is awarded 2 casings "
-        "if they lose a life"
-    )
-    flavor_text = (
-        '"You\'ve got to eat lead to get ahead. '
-        'Just make sure the bite\'s worth the chew."'
-        '\n~ "Chomper" Malone'
-    )
+# Movement
 
 
 # Card ideas:
 """
-* Place gun on the table and spin (like spin the bottle). Whoever it points at
-has to shoot themselves, then becomes gun holder.
+Cheek Slap  Flat pam smack face      +1 dignity -2 pain tolerance, -1 rage
+Jab Fist smack head/torso       -1 focus    -2 pain tolerance, -1 stamina
+Tap Out Both flat palms touch them anywhere
+False Surrender Flat palms raised above your head       -2 dignity  -2 rage,
+Feint
+Thumb-eye Press Both grasp hands touch face     -1 dignity
+
+Limb Control
+Control Wrist   Grasp hand touches their wrist      -1 focus, -1 stamina    You can move that limb anywhere
+Slap Away   Flat palm smack their limb          You can move that limb anywhere
+Power Grip  Both grasp hands touch their wrist
+
+
+Movement
+Jump    Crouching       "-2 stamina
+-1 rage
++1 dignity
+For this turn, you can move"
+
+
+Taunt - raise their rage. If high enough, they 'red out' and...
+focus drops to 2?
+...
 """
 
 # Unused flavor text:
 """
-"Misery loves company, especially if it's your own."
-~ Slick Sammy the Ringmaster
-
-"I'm dealing with fools and trolls and soft targets. I don't have time for these clowns."
-~ Charles the Smiler
-
-"A little peek behind the curtain can save your neck. Or, at least delay the inevitable."
-~ Cassandra the Seer
-
-"One for courage, and one for luck. Cheers to shooting twice as much!"
-~ Boris the Bold, the Bearded Lady
+...
 """

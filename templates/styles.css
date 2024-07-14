@@ -1,12 +1,39 @@
 :root {
-    --blaze: #FF5B22;
-    --flame: #FF9130;
-    --candle: #FECDA6;
-    --cool: #b4efff;
     --subtle: #A9A9A9;
     --subtle-light: #d6d6d6;
     --bg: #505050;
 }
+
+/* Classes for the card keywords */
+.touch, .smack, .smash {
+    text-decoration: underline dotted;
+}
+.touch { color: var(--bg); }
+.smack { color: #449DD1; }
+.smash { color: #253C78; }
+
+
+.status {
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+
+.focus { color: #F08700; }
+.rage { color: #E71D36 }
+.dignity { #093824 }
+.stamina { #EEF36A }
+
+.oxygen { color: #84BCDA }
+.blood { color: #6E0E0A; }
+.pain { color: #C95D63; }
+.senses { color: #17BEBB }
+
+/*
+Unused colors:
+#23CE6B
+#FF8C42
+*/
 
 .light-mode {
   --bg: white;
@@ -27,17 +54,13 @@
     }
 }
 
-@font-face {
-    font-family: 'Carnival';
-    src: url('Boldest_Enough.otf')
-}
 
 body {
     font-family: Arial, sans-serif;
     padding: 1em 0em;
     background: var(--bg);
     background-clip: content-box;
-    font-size: 14px;
+    font-size: 12px;
     display: inline;
 }
 h2 {
@@ -74,7 +97,6 @@ h2 {
 }
 
 .card-header {
-    font-family: Carnival;
     font-weight: bold;
     font-size: 1.9em;
     display: flex;
@@ -131,6 +153,12 @@ h2 {
 .card-body i {
     padding-top: .2em;
 }
+hr {
+    margin: .2em;
+    background: var(--subtle-light);
+    height: 1px;
+    border: 0;
+}
 
 .card-footer {
     padding: .5em;
@@ -141,6 +169,11 @@ h2 {
     white-space: pre-line;
     margin-top: auto;
     text-align: center;
+}
+.discard-text {
+    font-style: italic;
+    font-size: 0.6em;
+    color: gray;
 }
 
 table {
