@@ -2,9 +2,14 @@
     <div class="card">
         <div class="card-header">
             <span class="card-name">{{ card_type.human_name() }}</span>
-            <span>{{ card_type.get_cost() }}</span>
+            <span class="card-cost"  title="{{card_type.get_cost_breakdown()}}">
+                {{ card_type.get_cost() if card_type.get_cost() != 0 else "-"}}
+            </span>
         </div>
-        <img src="images/{{ card_type.name }}-{{i}}.png" class="card-image">
+        <i class="card-category">{{ card_type.get_category() }}</i>
+        {%  if not card_type.is_upkeep() %}
+            <img src="images/{{ card_type.name }}-{{i}}.png" class="card-image">
+        {% endif  %}
         <div class="card-body">
             <span> {{ card_type.get_description() }} </span>
         </div>

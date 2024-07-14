@@ -1,4 +1,5 @@
 import re
+from abc import ABCMeta
 
 """
 Module of handy utilities
@@ -13,6 +14,16 @@ def snake_to_title(text):
     return (
         ' '.join(word.title() for word in re.split('[_-]', text) if word)
     )
+
+def status_string(item):
+    # Simple helper function for +1/-1, etc
+    k, v = item
+    if v == 0:
+        return ""
+    sign = f"<span class='minus'>{v}</span>"
+    if v > 0:
+        sign = f"<span class='plus'>+{v}</span>"
+    return f"<span class='{k} status'>{sign} {k}</span>"
 
 def get_range(range_a, range_b=None):
     """
@@ -38,7 +49,14 @@ class NamedClassMeta(type):
         new_class.name = camel_to_hypens(name)
         return new_class
 
-class NamedClass(metaclass=NamedClassMeta):
+class CombinedNameMeta(ABCMeta, NamedClassMeta):
+    """
+    In case we want to define a child class as abstract, this lets us use
+    ABC alongside our custom named class metaclass
+    """
+    pass
+
+class NamedClass(metaclass=CombinedNameMeta):
     """
     Parent class that help keep track of the names of a type with many
     subtypes (such as cards, mechs, etc)

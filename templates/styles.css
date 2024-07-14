@@ -8,7 +8,7 @@
 .touch, .smack, .smash {
     text-decoration: underline dotted;
 }
-.touch { color: var(--bg); }
+.touch { color: gray; }
 .smack { color: #449DD1; }
 .smash { color: #253C78; }
 
@@ -21,13 +21,16 @@
 
 .focus { color: #F08700; }
 .rage { color: #E71D36 }
-.dignity { #093824 }
-.stamina { #EEF36A }
+.dignity { color: #093824 }
+.stamina { color: #818518 }
 
 .oxygen { color: #84BCDA }
 .blood { color: #6E0E0A; }
 .pain { color: #C95D63; }
 .senses { color: #17BEBB }
+
+.status .minus {color: red; }
+.status .plus {color: green; }
 
 /*
 Unused colors:
@@ -77,7 +80,7 @@ h2 {
 .card {
     width: 6.2cm;
     height: 8.7cm;
-    border: .4em solid var(--subtle);
+    border: .4em solid var(--subtle-light);
     border-radius: .5em;
     overflow: hidden;
     background-color: var(--bg);
@@ -104,12 +107,16 @@ h2 {
     align-items: stretch; /* Ensures that children stretch to fill the height */
     background-color: var(--bg);
     padding: .3em;
+    padding-bottom: 0em;
 }
 
 .card-name {
     flex-grow: 1; /* Allows the element to grow and take up available space */
     display: flex;
     align-items: center;
+}
+.card-cost {
+    color: var(--subtle);
 }
 
 .card-heat, .card-number {
@@ -160,12 +167,14 @@ hr {
     border: 0;
 }
 
-.card-footer {
+.card-footer, .card-category {
     padding: .5em;
     padding-top: 0em;
     font-style: italic;
-    font-size: 0.6em;
+    font-size: 0.8em;
     color: gray;
+}
+.card-footer {
     white-space: pre-line;
     margin-top: auto;
     text-align: center;
