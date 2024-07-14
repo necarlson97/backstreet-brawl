@@ -63,7 +63,7 @@ body {
     padding: 1em 0em;
     background: var(--bg);
     background-clip: content-box;
-    font-size: 12px;
+    font-size: 11px;
     display: inline;
 }
 h2 {
@@ -107,6 +107,7 @@ h2 {
     align-items: stretch; /* Ensures that children stretch to fill the height */
     background-color: var(--bg);
     padding: .3em;
+    padding-top: .1em;
     padding-bottom: 0em;
 }
 
@@ -167,22 +168,20 @@ hr {
     border: 0;
 }
 
-.card-footer, .card-category {
-    padding: .5em;
-    padding-top: 0em;
+.card-footer, .card-category, .status-desc {
     font-style: italic;
     font-size: 0.8em;
     color: gray;
 }
 .card-footer {
+    padding: .5em;
+    padding-top: 0em;
     white-space: pre-line;
     margin-top: auto;
     text-align: center;
 }
-.discard-text {
-    font-style: italic;
-    font-size: 0.6em;
-    color: gray;
+.card-category {
+    padding-left: 0.3em;
 }
 
 table {

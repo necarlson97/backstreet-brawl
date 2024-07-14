@@ -1,6 +1,7 @@
-from src.utils import NamedClass, status_string
+from src.utils import NamedClass, status_string, get_cost_from_menu
 from collections import Counter
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 import logging
 logger = logging.getLogger("cards")
@@ -38,22 +39,46 @@ class Card(NamedClass):
 
     # The different states the body can be in, and how much stamina each state
     # recovers per turn
-    # TODO description for each
-    state_stamina = {
-        "standing": 1,
-        "crouching": 2,
-        "sitting": 2,
-        "off balance": 1,
-        "prone": 3,
-        "airborne": 2,
-    }
-    state_focus = {
-        "standing": 2,
-        "crouching": 1,
-        "sitting": 1,
-        "off balance": 0,
-        "prone": 0,
-        "airborne": 0,
+    @dataclass
+    class Stance:
+        name: str
+        desc: str
+        rarity: int
+        focus: int
+        stamina: int
+
+        def get_description(self):
+            status_effects = status_string({
+                "stamina": self.stamina, "focus": self.focus
+            })
+            return (
+                f"{self.name}: "
+                f"<i class='status-desc'>{self.desc}</i> {status_effects}"
+            )
+
+    @dataclass
+    class Status:
+        level: int
+        state: str
+    stances = {
+        "standing": Stance(
+            name='standing', rarity=1, stamina=2, focus=2,
+            desc="feet flat on ground, hips aligned between the feet, hips above knee-level"),
+        "crouching": Stance(
+            name='crouching', rarity=1, stamina=1, focus=2,
+            desc="feet on ground, hips aligned between the feet, hips above knee-level"),
+        "sitting": Stance(
+            name='sitting', rarity=2, stamina=2, focus=1,
+            desc="hips below knee-level, chest above knee-level"),
+        "prone": Stance(
+            name='prone', rarity=2, stamina=3, focus=0,
+            desc="hips and chest below knee-level"),
+        "off balance": Stance(
+            name='off balance', rarity=1, stamina=0, focus=0,
+            desc="at least one limb on the ground"),
+        "airborne": Stance(
+            name='airborne', rarity=2, stamina=2, focus=0,
+            desc="nothing touching ground"),
     }
 
     # Parts of a requirement, and how much these keywords effect cost
@@ -141,14 +166,13 @@ class Card(NamedClass):
         for k, v in cls.their_effects.items():
             dikt[f"they get {k} {v}"] = -v
 
-        def add_to_cost(dikt, menu, source):
+        def add_to_cost(dikt, menu, source, key_add=""):
             # Check some piece of source text (requirements, effects, w/e)
             # and see if it changes our cost
-
-            # TODO find the min/max and add that? Rather than sum?
-            for k, v in menu.items():
-                if k.lower() in source.lower():
-                    dikt[f"{k} ({source})"] = v
+            dikt.update({
+                f"{key_add} {k}": v
+                for k, v in get_cost_from_menu(menu, source).items()
+            })
             return dikt
 
         extra_costs = {
@@ -158,24 +182,22 @@ class Card(NamedClass):
         }
         add_to_cost(dikt, extra_costs, cls.extra_effects)
 
-        your_req_costs = {
-            **cls.strike_types,
-            **cls.strike_targets,
-            # TODO should probs have a separate state-difficulty
-            **{k: -v for k, v in cls.state_focus.items()},
-        }
+        for r in cls.your_requirements:
+            # Skip if it is about what they do
+            if "play this" in r.lower():
+                dikt["reaction"] = 2
+                continue
 
-        if issubclass(cls, Reaction):
-            dikt["Reaction"] = 1
-        else:
-            for r in cls.your_requirements:
-                add_to_cost(dikt, your_req_costs, r)
+            add_to_cost(dikt, cls.strike_types, r, key_add="your strike type")
+            add_to_cost(dikt, cls.strike_targets, r, key_add="your target")
+            add_to_cost(
+                dikt, {k: -v.rarity for k, v in cls.stances.items()},
+                r, key_add="your stance")
 
-        their_req_costs = {
-            k: -3 + v for k, v in cls.state_focus.items()
-        }
         for r in cls.their_requirements:
-            add_to_cost(dikt, their_req_costs, r)
+            add_to_cost(
+                dikt, {k: -v.rarity for k, v in cls.stances.items()},
+                r, key_add="their stance")
         return dikt
 
     @classmethod
@@ -198,13 +220,15 @@ class Card(NamedClass):
         their_string = ", ".join(
             status_string(i) for i in cls.their_effects.items())
 
-        statements = []
+        reqs = ""
         if cls.your_requirements:
-            statements.append(
-                f"If you {'and '.join(cls.your_requirements)}:\n")
+            yr = "\nand ".join(cls.your_requirements)
+            reqs += f"If you {yr}:\n"
         if cls.their_requirements:
-            statements.append(
-                f"while they {'and '.join(cls.their_requirements)}:\n")
+            tr = "\nand ".join(cls.their_requirements)
+            reqs += f"while they {tr}:\n"
+
+        statements = [r for r in [reqs] if r]
         if your_string:
             statements.append(
                 f"You get {your_string}\n")
@@ -221,7 +245,7 @@ class Card(NamedClass):
         # TODO any extras?
         keywords = (
             set() | cls.hands
-            | cls.strike_types.keys() | cls.state_stamina.keys()
+            | cls.strike_types.keys() | cls.stances.keys()
         )
         for keyword in keywords:
             s = s.replace(keyword, f"<b class='{keyword}'>{keyword}</b>")
@@ -315,19 +339,19 @@ class Card(NamedClass):
 
         # TODO pretty print dicts
         return (
-            f"Plusses on you: {your_plus}\n"
-            f"Minuses on you: {your_minus}\n"
-            f"Plusses on them: {their_plus}\n"
-            f"Minuses on them: {their_minus}\n"
+            f"Plusses on you: {status_string(your_plus)}\n"
+            f"Minuses on you: {status_string(your_minus)}\n"
+            f"Plusses on them: {status_string(their_plus)}\n"
+            f"Minuses on them: {status_string(their_minus)}\n"
 
             "\n"
-            f"Sum on you: {your_totals}\n"
-            f"Sum on them: {their_totals}\n"
+            f"Sum on you: {status_string(your_totals)}\n"
+            f"Sum on them: {status_string(their_totals)}\n"
             "\n"
-            f"All Plusses: {plus_totals}\n"
-            f"All minuses: {minus_totals}\n"
+            f"All Plusses: {status_string(plus_totals)}\n"
+            f"All minuses: {status_string(minus_totals)}\n"
             "\n"
-            f"Final balance: {all_totals}\n"
+            f"Final balance: {status_string(all_totals)}\n"
         )
 
 """
@@ -397,7 +421,7 @@ class Curbstomp(Strike):
     their_effects = {
         "blood": -1,
         "senses": -2,
-        "pain tolerance": -2,
+        "pain tolerance": -1,
     }
 class GutKick(Strike):
     your_requirements = [
@@ -408,7 +432,7 @@ class GutKick(Strike):
     ]
     your_effects = {
         "dignity": -1,
-        "rage": +1,
+        "rage": +2,
     }
     their_effects = {
         "oxygen": -2,
@@ -554,7 +578,16 @@ class TuckJump():
         "stamina": -1,
     }
     extra_effects = (
-        "Stay airborne at the start of next turn"
+    )
+class HighJump():
+    your_requirements = [
+        "crouching"
+    ]
+    your_effects = {
+        "stamina": -1,
+    }
+    extra_effects = (
+        "Move your hips a limb-length in any direction."
     )
 
 class Reaction(Card, ABC):
@@ -563,26 +596,51 @@ class Reaction(Card, ABC):
     pass
 class CatchPunch(Reaction):
     your_requirements = [
-        "play this when a card smacks/smashes you with a fist"
+        "can have a grasp hand to touch their fist in one motion",
+        "play this just after they smack/smash you with a fist",
     ]
     your_effects = {
         "focus": -1,
         "stamina": -2,
     }
-    extra_effects = "Negate their cards effects on you"
+    extra_effects = (
+        "Negate their card's effects on you\n"
+    )
+class UkeBlock(Reaction):
+    your_requirements = [
+        "can have your forearm touch their hand in one motion",
+        "play this just after they smack/smash you with a hand"
+    ]
+    your_effects = {
+        "focus": -1,
+        "pain tolerance": -1,
+    }
+    extra_effects = (
+        "Negate their card's effects on you\n"
+    )
+class FirmRepost(Reaction):
+    your_requirements = [
+        "can smash your fist into their torso in one motion",
+        "play this just after they smack/smash you",
+    ]
+    your_effects = {
+        "focus": -1,
+    }
+    their_effects = {
+        "pain tolerance": -1,
+        "focus": -1,
+    }
 
 class Upkeep(Card, ABC):
     pass
-class SteadyBreath(Upkeep):
+class KeepBreathing(Upkeep):
     extra_effects = (
         "At the start if your turn, gain stamina depending on your state:<hr>"
-    ) + "<hr>".join(
-        f"{k}: " + ", ".join(filter(None, [
-            status_string(("stamina", Card.state_stamina[k])),
-            status_string(("focus", Card.state_focus[k])),
-        ]))
-        for k in Card.state_stamina
-    )
+    ) + "<hr>".join(s.get_description() for s in Card.stances.values())
+class ZZTest(Upkeep):
+    your_requirements = [
+        "smash a foot into their neck"
+    ]
 
 # Card ideas:
 """

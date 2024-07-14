@@ -17,6 +17,8 @@ def snake_to_title(text):
 
 def status_string(item):
     # Simple helper function for +1/-1, etc
+    if isinstance(item, dict):
+        return "".join(f"<div>{status_string(i)}</div>" for i in item.items())
     k, v = item
     if v == 0:
         return ""
@@ -24,6 +26,50 @@ def status_string(item):
     if v > 0:
         sign = f"<span class='plus'>+{v}</span>"
     return f"<span class='{k} status'>{sign} {k}</span>"
+
+def get_cost_from_menu(menu, source):
+    """
+    Take a 'menu' dict of keywords and how they will effect 'cost',
+    and a 'source' text, and return a dict of:
+    parts of the source string that were pertinent => how it effected cost
+    """
+    and_parts = [part.strip() for part in source.split('and')]
+    pertinent_costs = {}
+
+    def get_min_cost_or(part):
+        or_parts = [p.strip() for p in part.split('or ')]
+        min_cost = float('inf')
+        min_part = None
+        for op in or_parts:
+            for k, v in menu.items():
+                if k.lower() in op.lower():
+                    if abs(v) < min_cost:
+                        min_cost = v
+                        min_part = f"{k} ({op})"
+        return (
+            min_cost if min_cost != float('inf') else 0,
+            min_part if min_part else None
+        )
+
+    def get_sum_cost_and(part):
+        cost = 0
+        matched_parts = []
+        for k, v in menu.items():
+            if k.lower() in part.lower():
+                cost += v
+                matched_parts.append(f"{k} ({part})")
+        return cost, matched_parts
+
+    for part in and_parts:
+        cost, matched_part = get_min_cost_or(part)
+        if matched_part:
+            pertinent_costs[matched_part] = cost
+        else:
+            cost, matched_parts = get_sum_cost_and(part)
+            for matched_part in matched_parts:
+                pertinent_costs[matched_part] = cost
+
+    return pertinent_costs
 
 def get_range(range_a, range_b=None):
     """
