@@ -17,7 +17,7 @@
         {% endfor %}
     </div>
 
-    <div style="white-space: pre-line;">
+    <div style="white-space: pre-line; column-count: 3;">
         <h2> Balance Totals </h2>
         {{ Anubis.status_totals() }}
         <h2> Category Totals </h2>
@@ -28,6 +28,13 @@
         <h2> Rules </h2>
         At the start of your turn, if you are airborne, move yourself downwards until some part of you touches the ground.
         You can, however, be airborne during and at the end of your turn (and thus during your opponents turn).
+
+        Reactions are played as the enemy is playing a card against you. They will often require you to see if you can move a limb to block. If you can't complete that requirement, move the limb you tried back to where it was, and put the reaction back in your hand.
+
+        You can be in multiple stances at once, e.g.: a low squat could be 'crouching' or 'sitting'.
+        This means you can play cards that apply to either.
+        (For something like 'Keep Breathing', you can choose the better stance, but not stack multiple.)
+
         {# TODO other rules #}
         # TODO make these lose cards, because why not.
         Could even, if I wanted, write 2, one for each player.

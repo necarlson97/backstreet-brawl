@@ -15,16 +15,25 @@ def snake_to_title(text):
         ' '.join(word.title() for word in re.split('[_-]', text) if word)
     )
 
-def status_string(item):
+def status_string(item, remove_zero=False):
     # Simple helper function for +1/-1, etc
     if isinstance(item, dict):
-        return "".join(f"<div>{status_string(i)}</div>" for i in item.items())
+        return "".join(
+            f"<div>{status_string(i, remove_zero)}</div>"
+            for i in item.items()
+        )
+
     k, v = item
-    if v == 0:
-        return ""
-    sign = f"<span class='minus'>{v}</span>"
-    if v > 0:
-        sign = f"<span class='plus'>+{v}</span>"
+    if isinstance(v, int):
+        sign = f"<span class='minus'>{v}</span>"
+        if v == 0:
+            sign = f"<span class='zero'>{v}</span>"
+            if remove_zero:
+                return ""
+        if v > 0:
+            sign = f"<span class='plus'>+{v}</span>"
+    else:
+        sign = v
     return f"<span class='{k} status'>{sign} {k}</span>"
 
 def get_cost_from_menu(menu, source):

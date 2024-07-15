@@ -50,10 +50,10 @@ class Card(NamedClass):
         def get_description(self):
             status_effects = status_string({
                 "stamina": self.stamina, "focus": self.focus
-            })
+            }, remove_zero=True)
             return (
                 f"{self.name}: "
-                f"<i class='status-desc'>{self.desc}</i> {status_effects}"
+                f"<i class='reminder'>{self.desc}</i> {status_effects}"
             )
 
     @dataclass
@@ -83,9 +83,11 @@ class Card(NamedClass):
 
     # Parts of a requirement, and how much these keywords effect cost
     strike_types = {
+        "place": -.5,
         "touch": -1,
         "smack": -2,
         "smash": -3,
+        "sandwich": -3,
     }
 
     # Targets, and how easy to hit they are
@@ -94,8 +96,8 @@ class Card(NamedClass):
         "forearm": 0,
         "calf": 0,
         "foot": 0,
-        "hand": 0,
-        "head": 0,
+        # "hand": 0, TODO fucked by grasp hand. Can we call it something else?
+        "head": -0.5,
         "torso": 0,
         "hips": 0,
         "bicep": 0,
@@ -178,16 +180,12 @@ class Card(NamedClass):
         extra_costs = {
             "Negate their card": 2,
             "move that limb": 3,
+            "move your hips": 2,
             "keep this": 1,
         }
         add_to_cost(dikt, extra_costs, cls.extra_effects)
 
         for r in cls.your_requirements:
-            # Skip if it is about what they do
-            if "play this" in r.lower():
-                dikt["reaction"] = 2
-                continue
-
             add_to_cost(dikt, cls.strike_types, r, key_add="your strike type")
             add_to_cost(dikt, cls.strike_targets, r, key_add="your target")
             add_to_cost(
@@ -196,8 +194,15 @@ class Card(NamedClass):
 
         for r in cls.their_requirements:
             add_to_cost(
+                dikt, {k: 3 + v for k, v in cls.strike_types.items()},
+                r, key_add="their strike type")
+            add_to_cost(
                 dikt, {k: -v.rarity for k, v in cls.stances.items()},
                 r, key_add="their stance")
+
+        if issubclass(cls, Reaction):
+            dikt["reaction"] = 1
+
         return dikt
 
     @classmethod
@@ -223,10 +228,12 @@ class Card(NamedClass):
         reqs = ""
         if cls.your_requirements:
             yr = "\nand ".join(cls.your_requirements)
-            reqs += f"If you {yr}:\n"
+            reqs += f"If you {yr}"
         if cls.their_requirements:
             tr = "\nand ".join(cls.their_requirements)
-            reqs += f"while they {tr}:\n"
+            reqs += f"\nwhile they {tr}"
+        if cls.your_requirements or cls.their_requirements:
+            reqs += ":\n"
 
         statements = [r for r in [reqs] if r]
         if your_string:
@@ -257,14 +264,14 @@ class Card(NamedClass):
         return ", ".join(c.human_name() for c in cls.__bases__)
 
     @classmethod
-    def is_upkeep(cls):
-        return Upkeep in cls.__bases__
+    def is_rule(cls):
+        return Rule in cls.__bases__
 
     @classmethod
     def sorted_types(cls):
         cat_order = [
             "Strike", "Grapple", "Psych Out", "Control",
-            "Pose", "Movement", "Reaction", "Upkeep"
+            "Pose", "Movement", "Reaction", "Rule"
         ]
         return sorted(
             cls.all_types.values(),
@@ -302,9 +309,9 @@ class CheekSlap(Strike):
         "smack a flat palm into their face"
     ]
     their_effects = {
-        "dignity": +1,
-        "rage": -1,
-        "pain tolerance": -2,
+        "senses": +1,
+        "rage": -2,
+        "pain tolerance": -1,
     }
 class FrontJab(Strike):
     your_requirements = [
@@ -380,6 +387,8 @@ class Gastrizein(Strike):
 
 class Grapple(Card, ABC):
     # closer, squeezing cards
+    # Want a good mix of blood/+rage (bite, scratch)
+    # and oxygen/-rage (presses, squeezes)
     pass
 class GougeEyes(Grapple):
     your_requirements = [
@@ -393,6 +402,67 @@ class GougeEyes(Grapple):
         "senses": -2,
         "rage": +1,
     }
+class RakeArms(Grapple):
+    your_requirements = [
+        "touch both grasp hands to their forearm or bicep"
+    ]
+    your_effects = {
+        "stamina": -1,
+    }
+    their_effects = {
+        "blood": -2,
+        "stamina": -1,
+        "rage": +1,
+    }
+class DesperateBite(Grapple):
+    your_requirements = [
+        "touch your head to them anywhere"
+    ]
+    your_effects = {
+        "focus": -2,
+    }
+    their_effects = {
+        "blood": -2,
+        "pain tolerance": -2,
+        "rage": +1,
+    }
+class GnawFace(Grapple):
+    your_requirements = [
+        "touch your head to their head"
+    ]
+    your_effects = {
+        "focus": -1,
+        "dignity": -1,
+    }
+    their_effects = {
+        "blood": -1,
+        "pain tolerance": -1,
+        "senses": -2
+    }
+# Chokes/presses
+class NakedPress(Grapple):
+    your_requirements = [
+        "sandwich their neck between your forearm and torso",
+    ]
+    your_effects = {
+        "focus": -1,
+        "dignity": +1,
+    }
+    their_effects = {
+        "oxygen": -2,
+        "senses": -1
+    }
+class ThumbStrangle(Grapple):
+    your_requirements = [
+        "touch both grasp hands to their neck",
+    ]
+    your_effects = {
+        "dignity": -1,
+    }
+    their_effects = {
+        "oxygen": -2,
+        "senses": -1,
+    }
 
 class PsychOut(Card, ABC):
     pass
@@ -403,7 +473,7 @@ class TapOut(PsychOut):
     your_effects = {
         "dignity": -1,
     }
-    their_effects ={
+    their_effects = {
         "rage": -1,
     }
 class FauxWhiteFlag(PsychOut):
@@ -430,6 +500,15 @@ class Legerdemain(PsychOut):
 class Pose(Card, ABC):
     # take a stance to help yourself
     pass
+class LowSprawl(Pose):
+    your_requirements = [
+        "are prone",
+        "fully extend two or more limbs",
+    ]
+    your_effects = {
+        "focus": +1,
+        "oxygen": +1,
+    }
 class Zenkutsu(Pose):
     your_requirements = [
         "are crouching, with one foot far forward and one far back",
@@ -440,13 +519,62 @@ class Zenkutsu(Pose):
         "senses": +1,
         "dignity": +1,
     }
+class Mabu(Pose):
+    your_requirements = [
+        "are crouching, with feet parallel",
+        "have both hands below waist-height",
+    ]
+    your_effects = {
+        "focus": +1,
+        "dignity": +1,
+        "rage": -1,
+    }
+class GulpAir(Pose):
+    your_requirements = [
+        "are standing or crouching",
+        "touch both hands to your knees",
+    ]
+    your_effects = {
+        "focus": +1,
+        "oxygen": +2,
+        "dignity": -1,
+    }
+class CrossGaurd(Pose):
+    your_requirements = [
+        "place both forearms between your chest and theirs",
+    ]
+    your_effects = {
+        "oxygen": +1,
+        "dignity": +1,
+        "rage": -1,
+    }
+class Vasoconstrict(Pose):
+    your_requirements = [
+        "prone",
+        "at least one limb fully extended"
+    ]
+    your_effects = {
+        "blood": +2,
+        "rage": -1,
+        "focus": +1
+    }
+class FetalCurl(Pose):
+    your_requirements = [
+        "prone",
+        "at least two feet or hands touching torso or head"
+    ]
+    your_effects = {
+        "blood": +1,
+        "stamina": +1,
+        "focus": +1,
+    }
 
 class Control(Card, ABC):
     # grab them to move them
     pass
 class SqueezeWrist(Control):
     your_requirements = [
-        "touch a grasp hand to their hand/forearm"
+        "touch a grasp hand to their hand or forearm"
     ]
     your_effects = {
         "focus": -1,
@@ -476,24 +604,6 @@ class SweepLeg(Control):
 class Movement(Card, ABC):
     # TODO better name?
     pass
-class MoveLimb(Movement):
-    your_effects = {
-        "stamina": -1,
-    }
-    extra_effects = (
-        "Move one of your limbs any way you like<hr>"
-        "Keep this card in your hand always.\n"
-        "You can play it multiple times a turn."
-    )
-class SwitchGrip(Movement):
-    your_effects = {
-        "stamina": -1,
-    }
-    extra_effects = (
-        "Change out one or both hands<hr>"
-        "Keep this card in your hand always.\n"
-        "You can play it multiple times a turn."
-    )
 class TuckJump():
     your_requirements = [
         "lift both feet above knee-level"
@@ -511,7 +621,7 @@ class HighJump():
         "stamina": -1,
     }
     extra_effects = (
-        "Move your hips a limb-length in any direction."
+        "Move your hips a limb-length in any direction"
     )
 
 class Reaction(Card, ABC):
@@ -520,48 +630,101 @@ class Reaction(Card, ABC):
     pass
 class CatchPunch(Reaction):
     your_requirements = [
-        "can have a grasp hand to touch their fist in one motion",
-        "play this just after they smack/smash you with a fist",
+        "can have a grasp hand to touch their fist in one motion"
+    ]
+    their_requirements = [
+        "are smacking/smashing you with a fist"
     ]
     your_effects = {
         "focus": -1,
-        "stamina": -2,
+        "stamina": -1,
     }
     extra_effects = (
-        "Negate their card's effects on you\n"
+        "Negate their card's effects on you"
     )
 class UkeBlock(Reaction):
     your_requirements = [
-        "can have your forearm touch their hand in one motion",
-        "play this just after they smack/smash you with a hand"
+        "can have your forearm touch their hand in one motion"
+    ]
+    their_requirements = [
+        "are smacking/smashing you with a hand"
     ]
     your_effects = {
         "focus": -1,
         "pain tolerance": -1,
     }
     extra_effects = (
-        "Negate their card's effects on you\n"
+        "Negate their card's effects on you"
     )
 class FirmRepost(Reaction):
     your_requirements = [
         "can smash your fist into their torso in one motion",
-        "play this just after they smack/smash you",
+    ]
+    their_requirements = [
+        "are smacking/smashing you"
     ]
     your_effects = {
         "focus": -1,
     }
     their_effects = {
+        "oxygen": -1,
         "pain tolerance": -1,
         "focus": -1,
     }
-
-class Upkeep(Card, ABC):
-    pass
-class KeepBreathing(Upkeep):
+class RetreatingShrimp(Reaction):
+    your_requirements = [
+        "prone"
+    ]
+    their_requirements = [
+        "are grappling you"
+    ]
+    your_effects = {
+        "stamina": -1,
+    }
     extra_effects = (
-        "At the start if your turn, gain stamina depending on your state:<hr>"
+        "Move your hips a limb-length away"
+    )
+class ChinUp(Reaction):
+    their_requirements = [
+        "are touch/smack/smashing you"
+    ]
+    your_effects = {
+        "stamina": -1,
+        "dignity": +1,
+    }
+    their_effects = {
+        "rage": +1
+    }
+
+class Rule(Card, ABC):
+    pass
+class MoveLimb(Rule):
+    your_effects = {
+        "stamina": -1,
+    }
+    extra_effects = (
+        "Move one of your limbs any way you like\n"
+        "<i class='reminder'>A limb includes many joints, e.g.: "
+        "wrist+elbow+shoulder. The head+torso+hips is also a limb.</i>"
+        "<hr>"
+        "Keep this card in your hand always\n"
+        "You can play it multiple times a turn"
+    )
+class SwitchGrip(Rule):
+    your_effects = {
+        "stamina": -1,
+    }
+    extra_effects = (
+        "Change out one or both hands<hr>"
+        "Keep this card in your hand always\n"
+        "You can play it multiple times a turn"
+    )
+class KeepBreathing(Rule):
+    extra_effects = (
+        "At the start of your turn,\n"
+        "gain focus and stamina from your state:<hr>"
     ) + "<hr>".join(s.get_description() for s in Card.stances.values())
-class ZZTest(Upkeep):
+class ZZTest(Rule):
     your_requirements = [
         "smash a foot into their neck"
     ]

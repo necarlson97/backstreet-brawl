@@ -31,6 +31,7 @@
 
 .status .minus {color: red; }
 .status .plus {color: green; }
+.status .zero {color: gray; }
 
 /*
 Unused colors:
@@ -168,7 +169,7 @@ hr {
     border: 0;
 }
 
-.card-footer, .card-category, .status-desc {
+.card-footer, .card-category, .reminder {
     font-style: italic;
     font-size: 0.8em;
     color: gray;

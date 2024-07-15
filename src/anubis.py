@@ -23,7 +23,7 @@ class Anubis():
         "Reaction": 10,
         "Control": 5,
         "Movement": 5,
-        "Upkeep": 3,
+        "Rule": 3,
     }
 
     """
@@ -60,6 +60,7 @@ class Anubis():
             cat = card.get_category()
             cat_totals[cat] = cat_totals.get(cat, 0) + 1
 
+        # Final totals from the other categories
         deck_total = len(Card.sorted_types())
         deck_desired = sum(v for v in cls.category_sizes.values())
 
@@ -73,18 +74,22 @@ class Anubis():
             desired_persent = round(100 * desired_ratio)
             return f"{percent}% ({desired_persent}%)"
 
-        s = ""
-        for cat, total in cat_totals.items():
-            desired = cls.category_sizes[cat]
-            dc = draw_chance(cat)
-            s += f"{cat}: {total-desired} ({total}/{desired}) {dc}\n"
+        draw_chances = {cat: draw_chance(cat) for cat in cat_totals}
+        # Put totals into dict to see them
+        cat_totals["Deck"] = deck_total
+        cls.category_sizes["Deck"] = deck_desired
 
-        # Total deck size
-        s += (
-            f"For a final deck size of "
-            f"{deck_total-deck_desired} ({deck_total}/{deck_desired})"
+        need_more = {
+            k: cls.category_sizes[k] - v
+            for k, v in cat_totals.items()
+        }
+
+        return (
+            f"Final balance: {status_string(cat_totals)}\n"
+            f"Desired totals: {status_string(cls.category_sizes)}\n"
+            f"Need more: {status_string(need_more)}\n"
+            f"Draw Chance: {status_string(draw_chances)}\n"
         )
-        return s
 
     @classmethod
     def status_totals(cls):
@@ -93,11 +98,7 @@ class Anubis():
         or taken away
         """
         cards = Card.all_types.values()
-        statuses = set(
-            k for c in cards for k in
-            list(c.your_effects.keys()) + list(c.their_effects.keys())
-        )
-        statuses = sorted(list(statuses))
+        statuses = cls.desired_status_totals.keys()
 
         your_plus = {
             status: sum(
@@ -146,25 +147,29 @@ class Anubis():
         assert all_totals == sum_up(plus_totals, minus_totals)
 
         need_more = {
-            k: cls.desired_status_totals[k] - v
-            for k, v in all_totals.items()
+            k: cls.desired_status_totals[k] - all_totals[k]
+            for k in statuses
         }
 
-        # TODO pretty print dicts
-        return (
-            f"Plusses on you: {status_string(your_plus)}\n"
-            f"Minuses on you: {status_string(your_minus)}\n"
-            f"Plusses on them: {status_string(their_plus)}\n"
-            f"Minuses on them: {status_string(their_minus)}\n"
 
-            "\n"
-            f"Sum on you: {status_string(your_totals)}\n"
-            f"Sum on them: {status_string(their_totals)}\n"
-            "\n"
-            f"All Plusses: {status_string(plus_totals)}\n"
-            f"All minuses: {status_string(minus_totals)}\n"
-            "\n"
-            f"Final balance: {status_string(all_totals)}\n"
-            f"Desired totals: {status_string(cls.desired_status_totals)}\n"
-            f"Need more: {status_string(need_more)}\n"
+        final_results = [
+            ("Plusses on you", f"{status_string(your_plus)}\n"),
+            ("Minuses on you", f"{status_string(your_minus)}\n"),
+            ("Plusses on them", f"{status_string(their_plus)}\n"),
+            ("Minuses on them", f"{status_string(their_minus)}\n"),
+            ("<hr>", ""),
+            ("Sum on you", f"{status_string(your_totals)}\n"),
+            ("Sum on them", f"{status_string(their_totals)}\n"),
+            ("<hr>", ""),
+            ("All Plusses", f"{status_string(plus_totals)}\n"),
+            ("All minuses", f"{status_string(minus_totals)}\n"),
+            ("<hr>", ""),
+            ("Final balance", f"{status_string(all_totals)}\n"),
+            ("Desired totals", f"{status_string(cls.desired_status_totals)}\n"),
+            ("Need more", f"{status_string(need_more)}\n"),
+        ]
+
+        return "".join(
+            f"<div style='break-inside: avoid;'>{k}{v}</div>"
+            for k, v in final_results
         )
