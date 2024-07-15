@@ -1,7 +1,7 @@
-from src.utils import NamedClass, status_string, get_cost_from_menu
-from collections import Counter
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
+
+from src.utils import NamedClass, status_string, get_cost_from_menu
 
 import logging
 logger = logging.getLogger("cards")
@@ -262,97 +262,19 @@ class Card(NamedClass):
 
     @classmethod
     def sorted_types(cls):
+        cat_order = [
+            "Strike", "Grapple", "Psych Out", "Control",
+            "Pose", "Movement", "Reaction", "Upkeep"
+        ]
         return sorted(
-            cls.all_types.values(), key=lambda c: (c.get_category(), c.name))
+            cls.all_types.values(),
+            key=lambda c: (cat_order.index(c.get_category()), c.name)
+        )
 
     @classmethod
     def reprints(cls):
         return {
         }
-
-    # TODO functions that will check cards to see:
-    """
-    * are they balanced
-    * what stat is easiest/hardest to lower
-    * what stats do many cards use
-    * what status do few cards use
-    """
-
-    @classmethod
-    def status_totals(cls):
-        """
-        Return a str report of how many of each status is added to
-        or taken away
-        """
-        cards = cls.all_types.values()
-        statuses = set(
-            k for c in cards for k in
-            list(c.your_effects.keys()) + list(c.their_effects.keys())
-        )
-        statuses = sorted(list(statuses))
-
-        your_plus = {
-            status: sum(
-                card.your_effects[status]
-                for card in cards
-                if card.your_effects.get(status, 0) > 0
-            )
-            for status in statuses
-        }
-        your_minus = {
-            status: sum(
-                card.your_effects[status]
-                for card in cards
-                if card.your_effects.get(status, 0) < 0
-            )
-            for status in statuses
-        }
-        their_plus = {
-            status: sum(
-                card.their_effects[status]
-                for card in cards
-                if card.their_effects.get(status, 0) > 0
-            )
-            for status in statuses
-        }
-        their_minus = {
-            status: sum(
-                card.their_effects[status]
-                for card in cards
-                if card.their_effects.get(status, 0) < 0
-            )
-            for status in statuses
-        }
-
-        def sum_up(d1, d2):
-            return {k: d1.get(k, 0) + d2.get(k, 0) for k in statuses}
-
-        your_totals = sum_up(your_plus, your_minus)
-        their_totals = sum_up(their_plus, their_minus)
-        plus_totals = sum_up(your_plus, their_plus)
-        minus_totals = sum_up(your_minus, their_minus)
-
-        all_totals = sum_up(your_totals, their_totals)
-
-        # Sanity check
-        assert all_totals == sum_up(plus_totals, minus_totals)
-
-        # TODO pretty print dicts
-        return (
-            f"Plusses on you: {status_string(your_plus)}\n"
-            f"Minuses on you: {status_string(your_minus)}\n"
-            f"Plusses on them: {status_string(their_plus)}\n"
-            f"Minuses on them: {status_string(their_minus)}\n"
-
-            "\n"
-            f"Sum on you: {status_string(your_totals)}\n"
-            f"Sum on them: {status_string(their_totals)}\n"
-            "\n"
-            f"All Plusses: {status_string(plus_totals)}\n"
-            f"All minuses: {status_string(minus_totals)}\n"
-            "\n"
-            f"Final balance: {status_string(all_totals)}\n"
-        )
 
 """
 Below, all card types are defined in separate categories, based loosely
@@ -360,6 +282,7 @@ on what they are 'trying to do'
 """
 class Strike(Card, ABC):
     # hit them to hurt them
+    # TODO want to have a good mix of punches/kicks
     pass
 class BloodyNose(Strike):
     your_requirements = [
@@ -407,6 +330,7 @@ class Knifehand(Strike):
         "focus": -1,
         "senses": -1,
     }
+# Kicks
 class Curbstomp(Strike):
     your_requirements = [
         "smack a foot into their head"
