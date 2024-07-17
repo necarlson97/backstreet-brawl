@@ -93,6 +93,9 @@ class Card(NamedClass):
         "smack": -2,
         "smash": -3,
         "sandwich": -3,
+
+        "posing": -1,
+        "psyching": -1,
     }
 
     # Targets, and how easy to hit they are
@@ -105,11 +108,13 @@ class Card(NamedClass):
         "head": -0.5,
         "torso": 0,
         "chest": -0.5,
-        "hips": 0,
+        "hip": -0.5,
+        "groin": -1,
         "bicep": 0,
         "thigh": 0,
         "neck": -1,
         "face": -0.5,
+        # "not touching": -1, lol counts as strike-type for same cost so eh
     }
 
     # The switchable magnetic hands names
@@ -187,13 +192,18 @@ class Card(NamedClass):
 
         extra_costs = {
             "Negate their card": 2,
+            "move the limb": 2,
             "move that limb": 3,
             "move your hips": 2,
+            "move their hips": 3,
+            "to a prone": 3,
             "keep this": 1,
+            "rotate your": 2,
         }
         add_to_cost(dikt, extra_costs, cls.extra_effects)
 
-        for r in cls.your_requirements:
+        def checK_status_cost(r, person="you"):
+            # Helper for adding/subtracting cost for my/their status costs
             ret = status_requirement(r)
             if ret is not None:
                 status, gtlt, value = ret
@@ -201,13 +211,20 @@ class Card(NamedClass):
                 cost = -value / 2
                 # If it is < then lower is harder
                 if "<" in gtlt:
-                    cost = 1 + (-value / 2)
-                dikt[f"you need {gtlt}{value} {status}"] = cost
+                    cost = -4 + (value / 2)
+                dikt[f"{person} need {gtlt}{value} {status}"] = cost
+
+
+        for r in cls.your_requirements:
+            checK_status_cost(r)
 
             add_to_cost(
                 dikt, cls.strike_types, r, key_add="your strike type")
-            target = r.split("to their")[-1]
-            target = target.split("to them")[-1]
+
+            target = r
+            split_words = ["to their", "to them", "to your"]
+            for sw in split_words:
+                target = target.split(sw)[-1]
             add_to_cost(
                 dikt, cls.strike_targets, target, key_add="your target")
             add_to_cost(
@@ -215,9 +232,19 @@ class Card(NamedClass):
                 r, key_add="your stance")
 
         for r in cls.their_requirements:
-            add_to_cost(
-                dikt, {k: 3 + v for k, v in cls.strike_types.items()},
-                r, key_add="their strike type")
+            checK_status_cost(r, "they")
+
+            # If we are negating, it is better to negate worse
+            if "Negate" in cls.extra_effects:
+                add_to_cost(
+                    dikt, {k: 3 + v for k, v in cls.strike_types.items()},
+                    r, key_add="negate their strike type")
+            # If we are just reacting, it is better to react to more common
+            else:
+                add_to_cost(
+                    dikt, {k: v for k, v in cls.strike_types.items()},
+                    r, key_add="activate on their strike type")
+
             add_to_cost(
                 dikt, {k: -v.rarity for k, v in cls.stances.items()},
                 r, key_add="their stance")
@@ -266,13 +293,16 @@ class Card(NamedClass):
         parsed_your_reqs = [
             replace_status_requirement(r) for r in cls.your_requirements
         ]
+        parsed_their_reqs = [
+            replace_status_requirement(r) for r in cls.their_requirements
+        ]
 
         reqs = ""
         if cls.your_requirements:
             yr = "\nand ".join(parsed_your_reqs)
             reqs += f"If you {yr}"
         if cls.their_requirements:
-            tr = "\nand ".join(cls.their_requirements)
+            tr = "\nand ".join(parsed_their_reqs)
             reqs += f"\nwhile they {tr}"
         if cls.your_requirements or cls.their_requirements:
             reqs += ":\n"

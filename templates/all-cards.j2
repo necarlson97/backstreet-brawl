@@ -21,12 +21,19 @@
         {% endfor %}
     </div>
 
-    <div style="white-space: pre-line; column-count: 3;">
-        <h2> Balance Totals </h2>
-        {{ Anubis.status_totals() }}
-        <h2> Category Totals </h2>
-        {{ Anubis.category_totals() }}
-    </div>
+    {% set detailed_info, best_info = Anubis.status_totals() %}
+    <hr>
+    <h2> Balance Recommendations </h2>
+    <div class="col-info">{{ best_info }}</div>
+    <hr>
+    <h2> Category Totals </h2>
+    <div class="col-info">{{ Anubis.category_totals() }}</div>
+    <hr>
+    <h2> Balance Totals </h2>
+    <div class="col-info">{{ detailed_info }}</div>
+
+    <h2> Part Totals </h2>
+    <div class="col-info">{{ Anubis.part_totals() }}</div>
 
     <div style="white-space: pre-line;">
         <h2> Rules </h2>

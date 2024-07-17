@@ -1,4 +1,4 @@
-from src.utils import status_string
+from src.utils import status_string, draw_chance
 from src.card import Card
 
 class Anubis():
@@ -23,7 +23,7 @@ class Anubis():
         "Reaction": 10,
         "Control": 5,
         "Movement": 5,
-        "Rule": 3,
+        "Rule": 5,
         "Loss": 8,
     }
 
@@ -61,21 +61,32 @@ class Anubis():
             cat = card.get_category()
             cat_totals[cat] = cat_totals.get(cat, 0) + 1
 
-        # Final totals from the other categories
-        deck_total = len(Card.sorted_types())
-        deck_desired = sum(v for v in cls.category_sizes.values())
+        not_real_cards = ["Rule", "Loss"]
+        cat_totals = {
+            k: v for k, v in cat_totals.items()
+            if k not in not_real_cards
+        }
+        cat_desired = {
+            k: v for k, v in cls.category_sizes.items()
+            if k not in not_real_cards
+        }
 
-        def draw_chance(cat):
+        # Final totals from the other categories
+        deck_total = sum(v for v in cat_totals.values())
+        deck_desired = sum(v for v in cat_desired.values())
+
+        def draw_vs_desired_chance(cat):
             # How likely are we to get one at the start of a game
             # (not exactly correct)
-            ratio = (cat_totals[cat] / deck_total) * cls.draw_size
-            desired_ratio = (
-                (cls.category_sizes[cat] / deck_desired) * cls.draw_size)
-            percent = round(100 * ratio)
-            desired_persent = round(100 * desired_ratio)
-            return f"{percent}% ({desired_persent}%)"
+            percent = draw_chance(
+                cat_totals[cat], deck_total, cls.draw_size)
+            desired_persent = draw_chance(
+                cat_desired[cat], deck_desired, cls.draw_size)
+            return f"{percent} ({desired_persent})"
 
-        draw_chances = {cat: draw_chance(cat) for cat in cat_totals}
+        draw_chances = {
+            cat: draw_vs_desired_chance(cat) for cat in cat_totals
+        }
         # Put totals into dict to see them
         cat_totals["Deck"] = deck_total
         cls.category_sizes["Deck"] = deck_desired
@@ -85,11 +96,15 @@ class Anubis():
             for k, v in cat_totals.items()
         }
 
-        return (
-            f"Final balance: {status_string(cat_totals)}\n"
-            f"Desired totals: {status_string(cls.category_sizes)}\n"
-            f"Need more: {status_string(need_more)}\n"
-            f"Draw Chance: {status_string(draw_chances)}\n"
+        final_results = {
+            "Need more": need_more,
+            "Final balance": cat_totals,
+            "Desired totals": cls.category_sizes,
+            "Draw Chance": draw_chances,
+        }
+        return"".join(
+            f"<div style='break-inside: avoid;'>{k}{status_string(v)}</div>"
+            for k, v in final_results.items()
         )
 
     @classmethod
@@ -152,8 +167,22 @@ class Anubis():
             for k in statuses
         }
 
+        reccomendations = {
+            "Need more": need_more,
+            "Not enough minus on them":
+                {k: v for k, v in their_minus.items() if v > -6},
+            "Not enough minus on you":
+                {k: v for k, v in your_minus.items() if v > -3},
+            "Too much plus on you":
+                {k: v for k, v in your_plus.items() if v > 10},
+            "Not enough pluses on you":
+                {k: v for k, v in your_plus.items() if v < 6},
+            "Not enough pluses on them":
+                {k: v for k, v in their_plus.items() if v < 3},
+        }
 
-        final_results = [
+
+        detailed_results = [
             ("Plusses on you", f"{status_string(your_plus)}\n"),
             ("Minuses on you", f"{status_string(your_minus)}\n"),
             ("Plusses on them", f"{status_string(their_plus)}\n"),
@@ -167,10 +196,37 @@ class Anubis():
             ("<hr>", ""),
             ("Final balance", f"{status_string(all_totals)}\n"),
             ("Desired totals", f"{status_string(cls.desired_status_totals)}\n"),
-            ("Need more", f"{status_string(need_more)}\n"),
         ]
 
-        return "".join(
+        # TODO GROSS
+        detailed_info = "".join(
             f"<div style='break-inside: avoid;'>{k}{v}</div>"
-            for k, v in final_results
+            for k, v in detailed_results
         )
+        best_info = "".join(
+            f"<div style='break-inside: avoid;'>{k}{status_string(v)}</div>"
+            for k, v in reccomendations.items()
+        )
+
+        return detailed_info, best_info
+
+    @classmethod
+    def part_totals(cls):
+        """
+        How much of each body part do we mention?
+        """
+        def count_part(part):
+            return sum(
+                1 for card in Card.all_types.values()
+                if part in card.get_description()
+            )
+
+        parts = Card.strike_targets.keys() | Card.hands
+        totals = {
+            part: count_part(part) for part in parts
+        }
+
+        return (
+            f"<div style='break-inside: avoid;'>{status_string(totals)}</div>"
+        )
+

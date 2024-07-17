@@ -1,4 +1,5 @@
 import re
+import math
 from abc import ABCMeta
 
 """
@@ -97,6 +98,28 @@ def get_cost_from_menu(menu, source):
                 pertinent_costs[matched_part] = cost
 
     return pertinent_costs
+
+
+
+def binomial_coefficient(total, choose):
+    return
+
+def draw_chance(cards_in_category, total_cards, cards_drawn):
+    # Given the # of cards in a category, how likely are we to draw one
+    # on our 1st turn?
+
+    if cards_in_category == 0 or total_cards == 0 or cards_drawn == 0:
+        return "0%"
+
+    # Calculate the probability of drawing 0 cards
+    probability_zero = (
+        math.comb(total_cards - cards_in_category, cards_drawn)
+        / math.comb(total_cards, cards_drawn)
+    )
+
+    # Calculate the probability of drawing at least 1
+    percent_chance = round(100 * (1 - probability_zero))
+    return f"{percent_chance}%"
 
 def get_range(range_a, range_b=None):
     """

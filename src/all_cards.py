@@ -39,7 +39,8 @@ class FrontJab(Strike):
         "focus": -1,
     }
     their_effects = {
-        "stamina": -1,
+        "stamina": -2,
+        "senses": +1,
         "pain tolerance": -1,
     }
 class Knifehand(Strike):
@@ -70,17 +71,6 @@ class Hammerfist(Strike):
         "blood": -2,
         "senses": -2,
     }
-class ElbowDagger(Strike):
-    your_requirements = [
-        "smack an elbow into their torso"
-    ]
-    your_effects = {
-        "pain tolerance": -1,
-    }
-    their_effects = {
-        "blood": -1,
-        "senses": -2,
-    }
 class ThroatPunch(Strike):
     your_requirements = [
         "smash a fist into their neck"
@@ -92,6 +82,44 @@ class ThroatPunch(Strike):
     their_effects = {
         "oxygen": -2,
         "senses": -2,
+    }
+class Uppercut(Strike):
+    your_requirements = [
+        "smack a fist into their head",
+        "have your elbow below that fist"
+    ]
+    your_effects = {
+        "stamina": -1,
+    }
+    their_effects = {
+        "pain tolerance": -1,
+        "senses": -1,
+        "focus": -1,
+    }
+class SolidHook(Strike):
+    your_requirements = [
+        "smack a fist into them anywhere",
+        "have your elbow on-level with that fist"
+    ]
+    your_effects = {
+        "stamina": -1,
+    }
+    their_effects = {
+        "pain tolerance": -1,
+        "blood": -1,
+    }
+class Superman(Strike):
+    your_requirements = [
+        "are airborne",
+        "smack a fist into them anywhere",
+        "have at least one limb extended behind you",
+    ]
+    your_effects = {
+        "focus": +1,
+    }
+    their_effects = {
+        "pain tolerance": -1,
+        "blood": -1,
     }
 # Kicks
 class Curbstomp(Strike):
@@ -118,12 +146,12 @@ class GutKick(Strike):
         "are sitting or prone"
     ]
     your_effects = {
-        "dignity": -1,
         "rage": +2,
     }
     their_effects = {
         "oxygen": -2,
         "pain tolerance": -1,
+        "dignity": +1,
     }
 class Gastrizein(Strike):
     your_requirements = [
@@ -152,7 +180,92 @@ class FlyingRoundhouse(Strike):
         "dignity": -1,
     }
 # Other
-
+class KneeBomb(Strike):
+    your_requirements = [
+        "smack a knee into their thighs or torso",
+        "have the other leg extended behind you"
+    ]
+    your_effects = {
+    }
+    their_effects = {
+        "pain tolerance": -1,
+        "blood": -1,
+    }
+class ElbowDagger(Strike):
+    your_requirements = [
+        "smack an elbow into their torso"
+    ]
+    your_effects = {
+        "pain tolerance": -1,
+    }
+    their_effects = {
+        "blood": -1,
+        "senses": -2,
+    }
+class BashGroin(Strike):
+    your_requirements = [
+        "smash anything into their groin"
+    ]
+    your_effects = {
+        "dignity": -1,
+        "focus": -1,
+    }
+    their_effects = {
+        "blood": -2,
+        "pain tolerance": -2,
+        "senses": -1,
+        "focus": -1,
+    }
+class BatterKidney(Strike):
+    your_requirements = [
+        "smash anything into the top corner of their hip"
+    ]
+    your_effects = {
+        "focus": -1,
+    }
+    their_effects = {
+        "blood": -2,
+        "pain tolerance": -2,
+    }
+class PulpBody(Strike):
+    your_requirements = [
+        "smash anything into their torso"
+    ]
+    their_effects = {
+        "blood": -2,
+        "pain tolerance": -1,
+        "oxygen": -1,
+        "stamina": +1
+    }
+class RainBlows(Strike):
+    your_requirements = [
+        "smash anything into their head or torso"
+    ]
+    their_requirements = [
+        "are sitting or prone"
+    ]
+    your_effects = {
+        "blood": +1,
+    }
+    their_effects = {
+        "blood": -1,
+        "pain tolerance": -1,
+        "senses": -2,
+    }
+class LightShove(Strike):
+    your_requirements = [
+        "touch a flat palm to their torso"
+    ]
+    their_requirements = [
+        "are standing or crouching"
+    ]
+    your_effects = {
+        "senses": +2,
+        "oxygen": +1,
+    }
+    their_effects = {
+        "blood": +1,
+    }
 
 class Grapple(Card, ABC):
     # closer, squeezing cards
@@ -211,7 +324,7 @@ class GnawFace(Grapple):
 # Chokes/presses
 class NakedPress(Grapple):
     your_requirements = [
-        "sandwich their neck between your forearm and torso",
+        "sandwich their neck between your forearms",
     ]
     your_effects = {
         "focus": -1,
@@ -221,16 +334,42 @@ class NakedPress(Grapple):
         "oxygen": -2,
         "senses": -1
     }
+class AnacondaChoke(Grapple):
+    your_requirements = [
+        "are prone",
+        "sandwich their neck between your forearm and chest",
+    ]
+    your_effects = {
+        "pain tolerance": +1,
+    }
+    their_effects = {
+        "oxygen": -2,
+        "stamina": -1,
+        "senses": -1
+    }
+class ClockChoke(Grapple):
+    your_requirements = [
+        "touch a forearm to their neck",
+    ]
+    their_requirements = [
+        "are prone"
+    ]
+    your_effects = {
+        "focus": -1,
+        "pain tolerance": +1,
+    }
+    their_effects = {
+        "oxygen": -2,
+        "rage": -2,
+    }
 class ThumbStrangle(Grapple):
     your_requirements = [
         "touch both grasp hands to their neck",
     ]
-    your_effects = {
-        "dignity": -1,
-    }
     their_effects = {
         "oxygen": -2,
         "senses": -1,
+        "dignity": +1
     }
 class TriangleSqueeze(Grapple):
     your_requirements = [
@@ -238,11 +377,35 @@ class TriangleSqueeze(Grapple):
     ]
     your_effects = {
         "dignity": +1,
-        "focus": +1,
     }
     their_effects = {
         "oxygen": -2,
-        "focus": -1,
+    }
+# Pain locks, other
+class LegLock(Grapple):
+    your_requirements = [
+        "sandwich their leg or hips between your thighs",
+        "touch a grasp hand to their calf or foot"
+    ]
+    your_effects = {
+        "focus": +1,
+        "pain tolerance": +1,
+    }
+    their_effects = {
+        "pain tolerance": -1,
+        "senses": -1,
+    }
+class ArmBar(Grapple):
+    your_requirements = [
+        "sandwich their bicep between your thighs or forearm and chest",
+        "touch a grasp hand to their forearm or hand"
+    ]
+    your_effects = {
+        "stamina": +1,
+    }
+    their_effects = {
+        "pain tolerance": -2,
+        "senses": -1,
     }
 
 class PsychOut(Card, ABC):
@@ -262,11 +425,24 @@ class FauxWhiteFlag(PsychOut):
         "lift both flat palms above your head"
     ]
     your_effects = {
-        "dignity": -2,
-        # "focus": +1,
+        "dignity": -1,
     }
     their_effects = {
         "rage": -2,
+        "dignity": +1,
+    }
+class BegAndPlead(PsychOut):
+    your_requirements = [
+        "are sitting or crouching",
+        "touch both flat palms together"
+    ]
+    your_effects = {
+        "dignity": -1,
+        "stamina": +2,
+    }
+    their_effects = {
+        "focus": -1,
+        "rage": -1,
     }
 class Legerdemain(PsychOut):
     your_requirements = [
@@ -289,6 +465,73 @@ class BobAndWeave(PsychOut):
     their_effects = {
         "focus": -1,
     }
+class SubtleTaunt(PsychOut):
+    your_requirements = [
+        "touch one hand to your hip",
+    ]
+    their_requirements = [
+        "have >3 anger",
+    ]
+    your_effects = {
+        "senses": +1,
+        "dignity": +1,
+        "anger": -1,
+    }
+    their_effects = {
+        "dignity": -1,
+    }
+class HurlObsecenites(PsychOut):
+    your_requirements = [
+        "have >3 oxygen"
+    ]
+    their_requirements = [
+        "have <5 dignity"
+    ]
+    your_effects = {
+        "rage": +1,
+        "focus": +1,
+    }
+    their_effects = {
+        "focus": -1,
+    }
+class OpenlyJeer(PsychOut):
+    your_requirements = [
+        "have >3 rage",
+        "have >3 blood",
+    ]
+    their_requirements = [
+        "have >3 rage"
+    ]
+    your_effects = {
+        "senses": +1,
+        "oxygen": +1,
+        "pain tolerance": +1,
+    }
+    their_effects = {
+        "focus": -1,
+    }
+class SternWord(PsychOut):
+    your_requirements = [
+        "touch a grasp hand to their arm",
+        "have >3 dignity"
+    ]
+    your_effects = {
+        "focus": +1
+    }
+    their_effects = {
+        "dignity": -2,
+    }
+class SharpSnort(PsychOut):
+    your_requirements = [
+        "have >3 rage"
+    ]
+    your_effects = {
+        "blood": +1,
+        "oxygen": -1,
+    }
+    their_effects = {
+        "senses": -1,
+    }
 
 class Pose(Card, ABC):
     # take a stance to help yourself
@@ -310,7 +553,9 @@ class Zenkutsu(Pose):
     your_effects = {
         "focus": -1,
         "senses": +1,
-        "dignity": +1,
+    }
+    their_effects = {
+        "dignity": -1,
     }
 class Mabu(Pose):
     your_requirements = [
@@ -318,9 +563,11 @@ class Mabu(Pose):
         "have both hands below waist-height",
     ]
     your_effects = {
-        "focus": +1,
-        "dignity": +1,
+        "senses": +1,
         "rage": -1,
+    }
+    their_effects = {
+        "dignity": -1,
     }
 class GulpAir(Pose):
     your_requirements = [
@@ -330,7 +577,30 @@ class GulpAir(Pose):
     your_effects = {
         "focus": +1,
         "oxygen": +2,
-        "dignity": -1,
+        "senses": -1,
+    }
+class SlowBreathing(Pose):
+    your_requirements = [
+        "are standing or crouching",
+        "touch one hand to your chest",
+        "have >3 oxygen",
+    ]
+    your_effects = {
+        "focus": +1,
+        "stamina": +1,
+        "blood": +2,
+    }
+class LionsBreath(Pose):
+    @classmethod
+    def human_name(cls):
+        return "Lion's Breath"
+
+    your_requirements = [
+        "have >4 oxygen",
+    ]
+    your_effects = {
+        "rage": +1,
+        "blood": +1,
     }
 class CrossGaurd(Pose):
     your_requirements = [
@@ -361,14 +631,6 @@ class FetalCurl(Pose):
         "stamina": +1,
         "focus": +1,
     }
-class HurlObsecenites(Pose):
-    your_requirements = [
-        "have >3 oxygen"
-    ]
-    your_effects = {
-        "rage": +1,
-        "focus": +1,
-    }
 class CoverUp(Pose):
     your_requirements = [
         "touch both fists and forearms to your head"
@@ -377,6 +639,26 @@ class CoverUp(Pose):
         "rage": -1,
         "focus": +1,
         "pain tolerance": +1,
+    }
+class StayGrounded(Pose):
+    your_requirements = [
+        "are standing or crouching",
+        "have <5 rage",
+        "have >2 focus",
+    ]
+    your_effects = {
+        "pain tolerance": +1,
+        "dignity": +1,
+        "focus": +2
+    }
+class BodyScan(Pose):
+    your_requirements = [
+        "are not touching them",
+        "have >4 focus",
+    ]
+    your_effects = {
+        "senses": +2,
+        "dignity": +1,
     }
 
 # Other
@@ -423,22 +705,65 @@ class SweepLeg(Control):
         "pain tolerance": -1
     }
     extra_effects = "You can move that limb any way you like"
-
-class Movement(Card, ABC):
-    # TODO better name?
-    pass
-class TuckJump():
+class DoorKick(Control):
     your_requirements = [
-        "lift both feet above knee-level"
+        "smash a foot into their hip"
     ]
     your_effects = {
         "stamina": -1,
     }
+    their_effects = {
+        "blood": -1
+    }
     extra_effects = (
+        "You can move their hips a limb-length away.\n"
+        "Any part touching the ground tries to stay in place."
     )
-class HighJump():
+class ChokeSlam(Control):
     your_requirements = [
-        "crouching"
+        "are standing",
+        "touch a grasp hand to their neck",
+        "have >4 stamina"
+    ]
+    their_effects = {
+        "oxygen": -1,
+        "senses": -1,
+    }
+    extra_effects = (
+        "Move them and yourself to a prone position.\n"
+        "Any part touching the ground tries to stay in place."
+    )
+class Tackle(Control):
+    your_requirements = [
+        "are crouching and have >4 stamina",
+        "have both grasp hands infront of your chest",
+    ]
+    your_effects = {
+        "oxygen": -2,
+    }
+    their_effects = {
+        "rage": -1,
+        "senses": -1,
+    }
+    extra_effects = (
+        "Move them and yourself to a prone position.\n"
+        "Any of their parts touching the ground try to stay in place."
+    )
+
+class Movement(Card, ABC):
+    # TODO better name?
+    pass
+class TuckJump(Movement):
+    your_requirements = [
+        "lift both feet above knee-level"
+    ]
+    your_effects = {
+        "oxygen": -1,
+        "stamina": +1
+    }
+class HighJump(Movement):
+    your_requirements = [
+        "are crouching"
     ]
     your_effects = {
         "stamina": -1,
@@ -446,11 +771,34 @@ class HighJump():
     extra_effects = (
         "Move your hips a limb-length in any direction"
     )
+class Spin(Movement):
+    your_requirements = [
+        "are standing, crouching, or sitting"
+    ]
+    your_effects = {
+        "stamina": -1,
+    }
+    extra_effects = (
+        "Rotate your character 180 around the hips"
+    )
+class KickAwway(Movement):
+    your_requirements = [
+        "are crouching, sitting, or prone",
+        "touch a foot to their torso",
+    ]
+    your_effects = {
+        "senses": -1,
+        "stamina": +1,
+    }
+    extra_effects = (
+        "Move your hips a limb-length away"
+    )
 
 class Reaction(Card, ABC):
     # Card played on their turn
     # TODO is this a good idea?
     pass
+# Responses to strikes
 class CatchPunch(Reaction):
     your_requirements = [
         "can have a grasp hand to touch their fist in one motion"
@@ -473,7 +821,7 @@ class UkeBlock(Reaction):
         "are smacking/smashing you with a hand"
     ]
     your_effects = {
-        "focus": -1,
+        "senses": -1,
         "pain tolerance": -1,
     }
     extra_effects = (
@@ -487,12 +835,12 @@ class FirmRepost(Reaction):
         "are smacking/smashing you"
     ]
     your_effects = {
-        "focus": -1,
+        "senses": -1,
     }
     their_effects = {
-        "oxygen": -1,
-        "pain tolerance": -1,
+        "oxygen": -2,
         "focus": -1,
+        "stamina": -2,
     }
 class RetreatingShrimp(Reaction):
     your_requirements = [
@@ -501,8 +849,8 @@ class RetreatingShrimp(Reaction):
     their_requirements = [
         "are grappling you"
     ]
-    your_effects = {
-        "stamina": -1,
+    their_effects = {
+        "stamina": +1,
     }
     extra_effects = (
         "Move your hips a limb-length away"
@@ -512,11 +860,64 @@ class ChinUp(Reaction):
         "are touch/smack/smashing you"
     ]
     your_effects = {
-        "stamina": -1,
+        "blood": -1,
         "dignity": +1,
+        "pain tolerance": +1,
     }
     their_effects = {
         "rage": +1
+    }
+class ClenchTeeth(Reaction):
+    their_requirements = [
+        "are touch/smack/smashing you"
+    ]
+    # TODO
+    your_effects = {
+        "stamina": +2,
+        "pain tolerance": -1,
+        "blood": -1,
+    }
+class FlowLikeWater(Reaction):
+    their_requirements = [
+        "are smack/smashing you"
+    ]
+    your_effects = {
+        "blood": -2,
+    }
+    their_effects = {
+        "stamina": -2,
+        "pain tolerance": +1,
+    }
+    extra_effects = "Move the limb that was struck any way you like"
+# Responses to poses/psych outs
+class KnowingSmirk(Reaction):
+    their_requirements = [
+        "are posing or psyching you out"
+    ]
+    # TODO
+    your_effects = {
+    }
+    their_effects = {
+        "dignity": +1
+    }
+class CatchBreath(Reaction):
+    their_requirements = [
+        "are posing or psyching you out"
+    ]
+    # TODO
+    your_effects = {
+        "oxygen": +2
+    }
+    their_effects = {
+        "focus": +1
+    }
+class DeflatingGlare(Reaction):
+    their_requirements = [
+        "are posing or psyching you out",
+        "they will have >3 stamina"
+    ]
+    their_effects = {
+        "stamina": -2
     }
 
 class Rule(Card, ABC):
@@ -712,28 +1113,30 @@ the battered face in the mirror.
 
 class RageLoss(Loss):
     extra_effects = ("""
-I'LL KILL THEM - I'LL Ki-
+The fire overran within you,
+burned up everything inside you,
+and filled you with an oily, choking smoke.
 
-And suddenly the fighting spirit
-evaporates, just like that.
+And then it snuffed itself out.
 
 One second, you're clenched red,
 blood thudding, beating your eardrums.
 
-But that feels like a million years ago.
-Blows continue to land. And you feel them,
+Now that feels like a million years ago.
+The blows continue to land. And you feel them,
 their just landing on a body that is no longer yours.
 
 There is a pink quivering in your stomach,
 a wet fish on the pier.
-It flops on, but it knows that it is dead.
+It flops on, but it knows that it is done.
 
-You bring a hand to your face.
+You bring a hand to your belly.
 The touch is wooden.
 
-With this dead horse thoroughly beaten,
-you feel the heat of their anger begin to cool,
-to back off.
+You are the dead horse, thoroughly beaten.
+They are the cicada sun overhead.
+But the heat of their anger begin to cool,
+to back off. Shade returns.
 
 And so here you sit, drained.
 Numerous aches wait to paddle you tomorrow.
@@ -796,6 +1199,17 @@ You heavy breathing rocks you gently,
 and the lullaby of you foamy gasps
 cradles you to sleep.
 """)
+
+"""
+TODO I'd like to do another set of loss:
+focus = panic attack
+stamina = vomiting
+sensation = blissful lower-consciousness. Memory?
+rage = masochism
+oxygen = get high
+dignity = disgust in yourself, cowardice
+"""
+
 
 # Card ideas:
 """

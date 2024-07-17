@@ -52,6 +52,15 @@ Unused colors:
     flex: 1;
 }
 
+.col-info {
+    white-space: pre-line;
+    column-count: 3;
+    padding: 1em;
+}
+.col-info > div {
+    padding-bottom: 1em;
+}
+
 .light-mode {
   --bg: white;
 }
@@ -147,9 +156,9 @@ h2 {
 
 .card-image {
     width: auto;
-    min-height: 4.725cm;
-    max-height: 4.725cm;
-    height: 4.725cm;
+    min-height: 4.5cm;
+    max-height: 4.5cm;
+    height: 4.5cm;
 
     object-fit: contain;
     object-position: bottom;
