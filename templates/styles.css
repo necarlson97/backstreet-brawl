@@ -39,6 +39,19 @@ Unused colors:
 #FF8C42
 */
 
+.loss {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 26em;
+}
+.loss .blank-line {
+    flex: 1;
+}
+.loss div {
+    flex: 1;
+}
+
 .light-mode {
   --bg: white;
 }
@@ -60,7 +73,7 @@ Unused colors:
 
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Roboto Condensed", sans-serif;
     padding: 1em 0em;
     background: var(--bg);
     background-clip: content-box;

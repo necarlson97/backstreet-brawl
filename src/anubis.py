@@ -24,6 +24,7 @@ class Anubis():
         "Control": 5,
         "Movement": 5,
         "Rule": 3,
+        "Loss": 8,
     }
 
     """

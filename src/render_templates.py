@@ -4,6 +4,7 @@ import glob
 
 from src.card import Card
 from src.anubis import Anubis
+from src.all_cards import *  # Loads all cards into Card
 
 # Set up Jinja2 environment
 env = Environment(loader=FileSystemLoader('templates'))

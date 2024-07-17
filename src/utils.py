@@ -15,6 +15,24 @@ def snake_to_title(text):
         ' '.join(word.title() for word in re.split('[_-]', text) if word)
     )
 
+def status_requirement(s):
+    # Return the (string, > or <, value)
+    # for a requirement that is like ">2 stamina"
+
+    # TODO is this really not defined elsewhere?
+    statuses = [
+        "focus", "rage", "dignity", "stamina",
+        "oxygen", "blood", "pain tolerance", "senses",
+    ]
+    for status in statuses:
+        if status not in s:
+            continue
+        gtlt = ">" if ">" in s else "<"
+        # First character after > or <:
+        value = s.split(">")[-1].split("<")[-1][0]
+        return status, gtlt, int(value)
+    return None
+
 def status_string(item, remove_zero=False):
     # Simple helper function for +1/-1, etc
     if isinstance(item, dict):
@@ -42,11 +60,11 @@ def get_cost_from_menu(menu, source):
     and a 'source' text, and return a dict of:
     parts of the source string that were pertinent => how it effected cost
     """
-    and_parts = [part.strip() for part in source.split('and')]
+    and_parts = [part.strip() for part in source.split(' and ')]
     pertinent_costs = {}
 
     def get_min_cost_or(part):
-        or_parts = [p.strip() for p in part.split('or ')]
+        or_parts = [p.strip() for p in part.split(' or ')]
         min_cost = float('inf')
         min_part = None
         for op in or_parts:
@@ -120,6 +138,10 @@ class NamedClass(metaclass=CombinedNameMeta):
     @classmethod
     def human_name(cls):
         return snake_to_title(cls.name)
+
+    @classmethod
+    def kebab_name(cls):
+        return camel_to_hypens(cls.name)
 
     @classmethod
     def short_name(cls):
