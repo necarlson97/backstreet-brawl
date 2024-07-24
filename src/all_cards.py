@@ -9,6 +9,29 @@ class Strike(Card, ABC):
     # hit them to hurt them
     # TODO want to have a good mix of punches/kicks
     pass
+class PalmStrike(Strike):
+    your_requirements = [
+        "smack a hand into them anywhere"
+    ]
+    your_effects = {
+        "focus": +1,
+    }
+    their_effects = {
+        "senses": +1,
+        "blood": -1,
+    }
+class FrontJab(Strike):
+    your_requirements = [
+        "smack a fist into them anywhere"
+    ]
+    your_effects = {
+        "focus": -1,
+    }
+    their_effects = {
+        "stamina": -2,
+        "senses": +1,
+        "pain tolerance": -1,
+    }
 class BloodyNose(Strike):
     your_requirements = [
         "smash a fist into their face"
@@ -31,24 +54,12 @@ class CheekSlap(Strike):
         "rage": -2,
         "pain tolerance": -1,
     }
-class FrontJab(Strike):
-    your_requirements = [
-        "smack a fist into them anywhere"
-    ]
-    your_effects = {
-        "focus": -1,
-    }
-    their_effects = {
-        "stamina": -2,
-        "senses": +1,
-        "pain tolerance": -1,
-    }
 class Knifehand(Strike):
     your_requirements = [
         "smash a flat palm into their neck"
     ]
     your_effects = {
-        "stamina": -1,
+        "senses": -1,
         "focus": +1,
     }
     their_effects = {
@@ -64,7 +75,7 @@ class Hammerfist(Strike):
         "are sitting or prone"
     ]
     your_effects = {
-        "stamina": -1,
+        "blood": -1,
         "rage": +1,
     }
     their_effects = {
@@ -102,7 +113,7 @@ class SolidHook(Strike):
         "have your elbow on-level with that fist"
     ]
     your_effects = {
-        "stamina": -1,
+        "focus": -1,
     }
     their_effects = {
         "pain tolerance": -1,
@@ -122,6 +133,17 @@ class Superman(Strike):
         "blood": -1,
     }
 # Kicks
+class FootStrike(Strike):
+    your_requirements = [
+        "smack a foot into them anywhere"
+    ]
+    your_effects = {
+        "oxygen": +1,
+    }
+    their_effects = {
+        "senses": +1,
+        "pain tolerance": -1,
+    }
 class CurbStomp(Strike):
     your_requirements = [
         "smack a foot into their head"
@@ -180,6 +202,14 @@ class FlyingRoundhouse(Strike):
         "dignity": -1,
     }
 # Other
+class SimpleStrike(Strike):
+    your_requirements = [
+        "smack a hand, foot, elbow, calf or head into them anywhere"
+    ]
+    their_effects = {
+        "senses": +1,
+        "pain tolerance": -1,
+    }
 class KneeBomb(Strike):
     your_requirements = [
         "smack a knee into their thighs or torso",
@@ -302,7 +332,7 @@ class RakeArms(Grapple):
         "touch both grasp hands to their forearm or bicep"
     ]
     your_effects = {
-        "stamina": -1,
+        "senses": -1,
     }
     their_effects = {
         "blood": -2,
@@ -764,7 +794,7 @@ class ChokeSlam(Control):
     your_requirements = [
         "are standing",
         "touch a grasp hand to their neck",
-        "have >4 stamina"
+        "have >3 stamina"
     ]
     their_effects = {
         "oxygen": -1,
@@ -776,11 +806,11 @@ class ChokeSlam(Control):
     )
 class LeapingTackle(Control):
     your_requirements = [
-        "are crouching and have >4 stamina",
+        "are crouching and have >3 stamina",
         "have both grasp hands infront of your chest",
     ]
     your_effects = {
-        "oxygen": -2,
+        "oxygen": -1,
     }
     their_effects = {
         "rage": -1,
@@ -789,6 +819,19 @@ class LeapingTackle(Control):
     extra_effects = (
         "Move them and yourself to a prone position.\n"
         "Any of their parts touching the ground try to stay in place."
+    )
+class Powerslam(Control):
+    your_requirements = [
+        "touch them anywhere with a grasp hand",
+    ]
+    their_requirements = [
+        "are airborne"
+    ]
+    their_effects = {
+        "stamina": -1,
+    }
+    extra_effects = (
+        "Rotate and lower them to a prone position.\n"
     )
 
 class Movement(Card, ABC):
@@ -1381,7 +1424,6 @@ TODO I'd like to do another set of loss:
 # Card ideas:
 """
 Feint
-Headbutt!
 Taunt - raise their rage. If high enough, they 'red out' and...
 focus drops to 2?
 Powerslam - if they are airborne, bring them down

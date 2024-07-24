@@ -51,7 +51,7 @@ class Anubis():
         "rage": 0,
         "dignity": 0,
         "focus": int(-1.5 * desired_rounds),
-        "stamina": -2 * desired_rounds,
+        "stamina": -1 * desired_rounds,
     }
 
     @classmethod

@@ -198,7 +198,7 @@ class Card(NamedClass):
             "move that limb": 3,
             "move your hips": 2,
             "move their hips": 3,
-            "to a prone": 3,
+            "to a prone": 2,
             "keep this": 1,
             "rotate your": 2,
         }
@@ -226,12 +226,23 @@ class Card(NamedClass):
             target = r
             split_words = ["to their", "to them", "to your"]
             for sw in split_words:
-                target = target.split(sw)[-1]
+                try:
+                    weapon, target = target.split(sw)
+                    break
+                except:
+                    weapon, target = ("", target)
+
             add_to_cost(
                 dikt, cls.strike_targets, target, key_add="your target")
             add_to_cost(
                 dikt, {k: -v.rarity for k, v in cls.stances.items()},
                 r, key_add="your stance")
+
+            # TODO could price out weapons as inverse of target cost,
+            # but eh all would likely be 0
+            weapons = weapon.replace(" or ", ", ").split(", ")
+            if len(weapons) > 3:
+                dikt[f"many weapons: {weapons}"] = 0.5
 
         for r in cls.their_requirements:
             checK_status_cost(r, "they")

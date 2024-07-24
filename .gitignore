@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 templates/*.html
+templates/images/webp/*.webp
+templates/images/webp/*.png
+templates/images/webp/unused/*
 
 # C extensions
 *.so

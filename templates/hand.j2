@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="dark-mode-toggle.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button id="dark-toggle">🌞</button>
+    {% from "_card.j2" import build_card %}
+
+    <h2> Pink Hand </h2>
+    <div class="cards-container">
+        {% for card_type in Card.get_hand() %}
+            {{  build_card(card_type) }}
+        {% endfor %}
+    </div>
+    <h2> White Hand </h2>
+    <div class="cards-container">
+        {% for card_type in Card.get_hand() %}
+            {{  build_card(card_type) }}
+        {% endfor %}
+    </div>
+
+</body>
+</html>
