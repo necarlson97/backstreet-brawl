@@ -122,7 +122,7 @@ class Superman(Strike):
         "blood": -1,
     }
 # Kicks
-class Curbstomp(Strike):
+class CurbStomp(Strike):
     your_requirements = [
         "smack a foot into their head"
     ]
@@ -266,6 +266,19 @@ class LightShove(Strike):
     their_effects = {
         "blood": +1,
     }
+class HeadHarpoon(Strike):
+    your_requirements = [
+        "smack you head into their head",
+        "are off balance or airborne"
+    ]
+    your_effects = {
+        "blood": +1,
+        "rage": +1,
+    }
+    their_effects = {
+        "blood": -1,
+        "senses": -1,
+    }
 
 class Grapple(Card, ABC):
     # closer, squeezing cards
@@ -407,6 +420,19 @@ class ArmBar(Grapple):
         "pain tolerance": -2,
         "senses": -1,
     }
+class GrindingHeadbutt(Strike):
+    your_requirements = [
+        "smack your head into their head",
+        "touch a grasping hand to the other side of their head"
+    ]
+    your_effects = {
+        "stamina": +1,
+        "oxygen": +1,
+    }
+    their_effects = {
+        "senses": -1,
+        "pain tolerance": -1,
+    }
 
 class PsychOut(Card, ABC):
     pass
@@ -457,7 +483,7 @@ class BobAndWeave(PsychOut):
     your_requirements = [
         "standing or crouching",
         "both hands are fists",
-        "have focus >3",
+        "have >3 focus",
     ]
     your_effects = {
         "senses": +1
@@ -572,12 +598,27 @@ class Mabu(Pose):
 class GulpAir(Pose):
     your_requirements = [
         "are standing or crouching",
-        "touch both hands to your knees",
+        "touch a hand to your knees",
     ]
     your_effects = {
         "focus": +1,
         "oxygen": +2,
         "senses": -1,
+    }
+class RawHowl(Pose):
+    your_effects = {
+        "stamina": +2,
+        "oxygen": -1,
+        "senses": -1,
+    }
+class GutteralSob(Pose):
+    your_requirements = [
+        "are crouching, sitting, prone, or off balance",
+        "have >2 oxygen",
+    ]
+    your_effects = {
+        "blood": +1,
+        "pain tolerance": +1,
     }
 class SlowBreathing(Pose):
     your_requirements = [
@@ -587,8 +628,8 @@ class SlowBreathing(Pose):
     ]
     your_effects = {
         "focus": +1,
-        "stamina": +1,
-        "blood": +2,
+        "stamina": +2,
+        "blood": +1,
     }
 class LionsBreath(Pose):
     @classmethod
@@ -733,7 +774,7 @@ class ChokeSlam(Control):
         "Move them and yourself to a prone position.\n"
         "Any part touching the ground tries to stay in place."
     )
-class Tackle(Control):
+class LeapingTackle(Control):
     your_requirements = [
         "are crouching and have >4 stamina",
         "have both grasp hands infront of your chest",
@@ -871,7 +912,6 @@ class ClenchTeeth(Reaction):
     their_requirements = [
         "are touch/smack/smashing you"
     ]
-    # TODO
     your_effects = {
         "stamina": +2,
         "pain tolerance": -1,
@@ -894,17 +934,15 @@ class KnowingSmirk(Reaction):
     their_requirements = [
         "are posing or psyching you out"
     ]
-    # TODO
     your_effects = {
-    }
-    their_effects = {
-        "dignity": +1
+        "dignity": +1,
+        "senses": +1,
+        "focus": -2,
     }
 class CatchBreath(Reaction):
     their_requirements = [
         "are posing or psyching you out"
     ]
-    # TODO
     your_effects = {
         "oxygen": +2
     }
@@ -928,15 +966,15 @@ class MoveLimb(Rule):
     }
     extra_effects = (
         "Move one of your limbs any way you like\n"
-        "<i class='reminder'>A limb includes many joints, e.g.: "
-        "wrist+elbow+shoulder. The head+torso+hips is also a limb.</i>"
+        "<i class='reminder'>A limb includes all joints up to the hips, e.g:"
+        "hand+forearm+bicep+torso+hips or foot+calf+thigh+hips.</i>"
         "<hr>"
         "Keep this card in your hand always\n"
         "You can play it multiple times a turn"
     )
 class SwitchGrip(Rule):
     your_effects = {
-        "stamina": -1,
+        "focus": -1,
     }
     extra_effects = (
         "Change out one or both hands<hr>"
@@ -946,7 +984,7 @@ class SwitchGrip(Rule):
 class KeepBreathing(Rule):
     extra_effects = (
         "At the start of your turn,\n"
-        "gain focus and stamina from your state:<hr>"
+        "gain focus and stamina from your stance:<hr>"
     ) + "<hr>".join(s.get_description() for s in Card.stances.values())
 class YourHealth(Rule):
     extra_effects = (
@@ -971,8 +1009,16 @@ class ZZTest(Rule):
 class Loss(Card, ABC):
     # Flip over and read when you loose the game
     flavor_text = ""
+    count = 2
+    loss = ["test1", "test2"]
+
+    @classmethod
+    def get_description(cls):
+        cls.loss.append(cls.loss.pop(0))
+        return cls.loss[-1].strip()
+
 class OxygenLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 The muscles in your neck tense,
 and churn, your diaphragm writhes.
 Your face feels hot, pink,
@@ -994,10 +1040,35 @@ and even that is descending away from you.
 
 Your vision is a tight, milky cone.
 And then it is gone.
-""")
+""",
+"""
+Half you mind is here, on the bloodied concrete:
+hunting for an opening, readying a vicious volley.
+
+The other half floats in cool lake water,
+peering up at tannin-stained sunlight.
+Your lungs are kicking, swimming, trying to
+push you up into the world of air.
+
+But the dappled surface pulls farther away.
+You are sinking.
+Icy, alge-choked water floods into your cranium.
+
+Your amygdala is only big enough for one thought:
+Breathe, goddamn it, you need to breathe.
+Breathe!
+Breathe... goddah... you...
+...
+
+The paramedics would note your feet's
+'unconscious reflexive plantar responses'.
+At the lake, you would sink
+your toes into course, clay-filed sand.
+"""
+]
 
 class BloodLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 Looking down, your vision blurs
 into a wet mess of red.
 
@@ -1022,10 +1093,14 @@ to your salty, pale lips
 as the color begins to drain from the world.
 
 And you collapse.
-""")
+""",
+"""
+test
+"""
+]
 
 class PainLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 You try to stand back, to push away,
 but the anguish drags you to your knees.
 
@@ -1048,10 +1123,14 @@ sharp, gray relief, every vein dilating.
 The vasovagal syncope claws into your mind,
 pushing you out, dragging you
 into the welcome release of the dark tunnel.
-""")
+""",
+"""
+crawling away in blind fear
+"""
+]
 
 class SensationLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 Your eyes snap shut, but the comforting
 dark behind your eyelids is missing.
 There you find an alarming static,
@@ -1078,10 +1157,14 @@ you don't see their smug silhouette walking away.
 
 You sense nothing.
 You are alone.
-""")
+""",
+"""
+blissful lower-consciousness. Memory?
+"""
+]
 
 class FocusLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 Your jaw slackens, fists loosen, and eyes swim.
 Your purpled lips droop into an ischemic smirk.
 
@@ -1109,10 +1192,14 @@ they are calling your name.
 
 It will be longer until you recognize
 the battered face in the mirror.
-""")
+""",
+"""
+panic attack
+"""
+]
 
 class RageLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 The fire overran within you,
 burned up everything inside you,
 and filled you with an oily, choking smoke.
@@ -1141,10 +1228,37 @@ to back off. Shade returns.
 And so here you sit, drained.
 Numerous aches wait to paddle you tomorrow.
 But for now you flop uselessly on.
-""")
+""",
+"""
+Yes. Yes!
+
+Each blow you deliver -and receive-
+brings sharp, delectable notes of pain.
+The skin-seams at your knuckles and elbow fray,
+and begin to pull apart.
+Red velvet curtains opening for the show.
+
+You punch now not to subdue them, not to win
+- but to feel the bone-rattling ache that travels
+like storm surge through your metacarpal stones,
+like vibrato strings up the bow of your forearm,
+like pneumatic hammering through the humerus,
+to the collarbone, to the gooseflesh
+at the nape of your neck.
+
+The blinding wrath transmogrifies within you,
+a changeling hate - you don't hate them,
+you've forgotten about them.
+But you love to hate yourself.
+
+Masochism molts within you.
+When you are done, your smile will be
+unrecognizable.
+"""
+]
 
 class DignityLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 Inside you rings the sound of snapping chains.
 With one hand, you grope and claw,
 with the other, you throw a rhythmic fury of blows.
@@ -1171,10 +1285,40 @@ You have a while until the regret sets in.
 But you already feel its weight above you
 like a great thundercloud,
 opaque as wine-colored velvet.
-""")
+""",
+"""
+You raise a fist to eye level, shielding your face.
+
+And there you see it:
+the ugly split knuckle,
+oozing thick blood-drops like fat leeches.
+Sweat welling in fine, matted metacarpal hairs
+like oil fires on a war-blasted desert.
+
+Minutes ago you traded fine fingers
+and pressed cuticles for these
+despicable crooked digits and cracked nails.
+
+What kind of worship leaves the temple this way?
+
+You expectorate blood from your mouth,
+and the spit lands upon your name.
+
+Your honor crunches beneath you feet like glass.
+The shards of your decency digging their way
+into the dirty flesh of your sole.
+
+A nausea grows slowly inside, not to be
+soothed by soft food, nor expunged by retching.
+
+It too, buries itself within your bruised body,
+promising to painfully resurface each morning
+when you look in the mirror.
+"""
+]
 
 class StaminaLoss(Loss):
-    extra_effects = ("""
+    loss = ["""
 You scramble backwards,
 landing on your arse,
 kicking futilely to gain some distance.
@@ -1198,40 +1342,50 @@ spittle spattered pavement before you.
 You heavy breathing rocks you gently,
 and the lullaby of you foamy gasps
 cradles you to sleep.
-""")
+""",
+"""
+You try to lift your arms
+- but all energy seems to drip out of them:
+the 'chi' streaming like warm piss
+down your pits, up your thighs,
+collecting in a sickly stomach pool.
+
+It sloshes nauseatingly. Your abs squirm:
+contractions giving birth to a desperate collapse.
+
+A wave of cold runs up your genitals,
+washing over the whirlpool in your belly.
+
+Acid burping drags razors along your esophagus,
+and singes your nostril hairs.
+You press your eyes shut, gird your teeth
+- but you know it is too late.
+
+The chain-retching threatens to knock your
+adams-apple free. To tie your larynx in a knot.
+
+You puke. And puke and puke.
+You snap your head to and fro,
+stupidly trying to point it somewhere.
+But instead of somewhere it goes everywhere.
+
+So yeah. Fight's over.
+"""
+]
 
 """
 TODO I'd like to do another set of loss:
-focus = panic attack
-stamina = vomiting
-sensation = blissful lower-consciousness. Memory?
-rage = masochism
-oxygen = get high
-dignity = disgust in yourself, cowardice
 """
 
 
 # Card ideas:
 """
 Feint
-Thumb-eye Press Both grasp hands touch face     -1 dignity
-
-Limb Control
-Slap Away   Flat palm smack their limb          You can move that limb anywhere
-Power Grip  Both grasp hands touch their wrist
-
-Look over fighting moves, just add a bunch
-
-
-Movement
-Jump    Crouching       "-2 stamina
--1 rage
-+1 dignity
-For this turn, you can move"
-
-
+Headbutt!
 Taunt - raise their rage. If high enough, they 'red out' and...
 focus drops to 2?
+Powerslam - if they are airborne, bring them down
+Move to recover stamina without moving, and without pose requirement
 ...
 """
 

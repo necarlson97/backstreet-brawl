@@ -6,7 +6,8 @@
 
 /* Classes for the card keywords */
 .touch, .smack, .smash {
-    text-decoration: underline dotted;
+    text-decoration: underline;
+    text-decoration-color: #C95D63;
 }
 .touch { color: gray; }
 .smack { color: #449DD1; }
@@ -59,6 +60,10 @@ Unused colors:
 }
 .col-info > div {
     padding-bottom: 1em;
+    display: block;
+}
+.col-info > div > span {
+    display: block;
 }
 
 .light-mode {
@@ -173,6 +178,7 @@ h2 {
 .card-body {
     padding: .3em;
     padding-bottom: 0em;
+    padding-top: 0em;
     display: flex;
     flex-direction: column;
     white-space: pre-line;

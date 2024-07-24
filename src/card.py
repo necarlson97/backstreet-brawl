@@ -1,6 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass
 import re
+import random
 
 from src.utils import (
     NamedClass, status_string, get_cost_from_menu, status_requirement
@@ -56,7 +57,8 @@ class Card(NamedClass):
             }, remove_zero=True)
             return (
                 f"{self.name}: "
-                f"<i class='reminder'>{self.desc}</i> {status_effects}"
+                f"<i class='reminder'>{self.desc}</i> "
+                f"<div>{status_effects}</div>"
             )
 
     @dataclass
@@ -79,7 +81,7 @@ class Card(NamedClass):
             name='prone', rarity=2, stamina=3, focus=0,
             desc="hips and chest below knee-level"),
         "off balance": Stance(
-            name='off balance', rarity=1, stamina=0, focus=0,
+            name='off balance', rarity=1, stamina=2, focus=-1,
             desc="at least one limb on the ground"),
         "airborne": Stance(
             name='airborne', rarity=2, stamina=2, focus=0,
@@ -251,7 +253,7 @@ class Card(NamedClass):
 
         from src.all_cards import Reaction
         if issubclass(cls, Reaction):
-            dikt["reaction"] = 1
+            dikt["reaction"] = 0.5
 
         return dikt
 
@@ -352,6 +354,22 @@ class Card(NamedClass):
             cls.all_types.values(),
             key=lambda c: (cat_order.index(c.get_category()), c.name)
         )
+
+    @classmethod
+    def real_cards(cls):
+        not_real_cards = ["Rule", "Loss"]
+        return [
+            ct for ct in cls.all_types.values()
+            if ct.get_category() not in not_real_cards
+        ]
+
+    @classmethod
+    def get_hand(cls):
+        from src.anubis import Anubis
+        return [
+            random.choice(cls.real_cards())
+            for i in range(Anubis.draw_size)
+        ]
 
     @classmethod
     def reprints(cls):

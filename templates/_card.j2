@@ -13,33 +13,11 @@
             <i class="card-category">{{ cat }}</i>
         {% endif %}
         {% if short_desc %}
-            <img src="images/{{ card_type.name }}-{{i}}.png" class="card-image">
+            <img src="images/{{ card_type.name }}.png" class="card-image">
         {% endif %}
         <div class="card-body {{'long-desc' if not short_desc else ""}}">
-            <span id="{{card_type.kebab_name()}}-card-desc" class='{{cat.lower()}}'>{{desc}} </span>
+            <span class='{{cat.lower()}} card-desc'>{{desc}} </span>
         </div>
         <div class="card-footer">{{ card_type.flavor_text }}</div>
     </div>
-
-    <script>
-        // change size of just the totally blank lines in desc
-        document.addEventListener("DOMContentLoaded", function() {
-            if ({{ 'false' if cat == "Loss" else 'true' }}) {
-                return;
-            }
-            const textContainer = document.getElementById(
-                "{{card_type.kebab_name()}}-card-desc");
-            const lines = textContainer.innerHTML.split('\n');
-
-            const adjustedLines = lines.map(line => {
-                if (line.trim() === '') {
-                    return '<div class="blank-line"></div>';
-                } else {
-                    return "<div>"+line.trim()+"</div>";
-                }
-            });
-
-            textContainer.innerHTML = adjustedLines.join('');
-        });
-    </script>
 {% endmacro %}

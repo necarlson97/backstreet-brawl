@@ -2,6 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="dark-mode-toggle.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +22,27 @@
         {% endfor %}
     </div>
 
+    <script>
+        function adjustLines(ele) {
+            const lines = ele.innerHTML.split('\n');
+            const adjustedLines = lines.map(line => {
+                if (line.trim() === '') {
+                    return '<div class="blank-line"></div>';
+                } else {
+                    return "<div>"+line.trim()+"</div>";
+                }
+            });
+
+            ele.innerHTML = adjustedLines.join('');
+        }
+        // change size of just the totally blank lines in desc
+        document.addEventListener("DOMContentLoaded", function() {
+            const elements = document.querySelectorAll(
+                '.loss.card-desc');
+            elements.forEach(ele => adjustLines(ele));
+        });
+    </script>
+
     {% set detailed_info, best_info = Anubis.status_totals() %}
     <hr>
     <h2> Balance Recommendations </h2>
@@ -36,11 +58,40 @@
     <div class="col-info">{{ Anubis.part_totals() }}</div>
 
     <div style="white-space: pre-line;">
-        <h2> Rules </h2>
-        At the start of your turn, if you are airborne, move yourself downwards until some part of you touches the ground.
+        <h1> Backstreet Brawl </h1>
+        Whatever was said, it doesn't matter now.
+        What matters is throwing fists. And winning.
+
+        <h2> Start </h2>
+        Each player gets their 8 Loss cards, one of each type, and lays them face down infront of them. Place a d6, with the '6' upwards, on the back of each Loss card. This is your current health, how much blood you have, how much oxygen, etc. Ensure they are visible to all.
+
+        Each player draws {{ Anubis.draw_size }} action cards.
+        Place your figure in the stand, upright.
+        (You can have their hands/arms however you like)
+
+        Whichever player has a bigger bruise goes first.
+        If neither is bruised, whoever bled last.
+
+        <h2> Turns </h2>
+        On your turn, you will:
+        * Make as many
+
+
+        <h3> At the start of your turn: </h3>
+        <ul>
+            draw cards until you have {{ Anubis.draw_size }}.
+        </ul>
+        <ul>
+            Check <b>Keep Breathing</b> to see how much stamina/focus you recover.
+        </ul>
+        <ul>
+            if you are airborne, move yourself downwards until some part of you touches the ground.
+        </ul>
         You can, however, be airborne during and at the end of your turn (and thus during your opponents turn).
 
-        Reactions are played as the enemy is playing a card against you. They will often require you to see if you can move a limb to block. If you can't complete that requirement, move the limb you tried back to where it was, and put the reaction back in your hand.
+        During your turn, you play as many cards as you like, and can simply discard any you don't want.
+
+        If you have a <b> Reaction </b> card, you can play it during your opponents turn. They may require you to see if you can move a limb to block. If you can't complete that requirement, move the limb you tried back to where it was, and put the reaction back in your hand.
 
         You can be in multiple stances at once, e.g.: a low squat could be 'crouching' or 'sitting'.
         This means you can play cards that apply to either.

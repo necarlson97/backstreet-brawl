@@ -38,7 +38,7 @@ def status_string(item, remove_zero=False):
     # Simple helper function for +1/-1, etc
     if isinstance(item, dict):
         return "".join(
-            f"<div>{status_string(i, remove_zero)}</div>"
+            f"<span>{status_string(i, remove_zero)}</span>"
             for i in item.items()
         )
 
