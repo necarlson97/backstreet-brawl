@@ -4,7 +4,7 @@ import re
 import random
 
 from src.utils import (
-    NamedClass, status_string, get_cost_from_menu, status_requirement
+    NamedClass, status_string, get_cost_from_menu, status_requirement, status_order
 )
 
 import logging
@@ -95,6 +95,7 @@ class Card(NamedClass):
         "smack": -2,
         "smash": -3,
         "sandwich": -3,
+        "wrap": -3,
 
         "posing": -1,
         "psyching": -1,
@@ -116,7 +117,6 @@ class Card(NamedClass):
         "thigh": 0,
         "neck": -1,
         "face": -0.5,
-        # "not touching": -1, lol counts as strike-type for same cost so eh
     }
 
     # The switchable magnetic hands names
@@ -146,6 +146,17 @@ class Card(NamedClass):
         # TODO SLOPPY
         if ABC not in cls.__bases__:
             cls.all_types[cls.__name__] = cls
+
+            # TODO SLOPPY
+            for existing in cls.all_types.values():
+                matching_text = cls != existing and cls.flavor_text == existing.flavor_text
+                not_todo = "todo" not in cls.flavor_text.lower()
+                if cls.flavor_text and matching_text and not_todo:
+                    raise ValueError(
+                        f"Duplicate flavor: "
+                        f"{existing.name} ({existing.flavor_text}) vs "
+                        f"{cls.name} ({cls.flavor_text})"
+                    )
 
     def __str__(self):
         return f"{self.name}"
@@ -204,10 +215,13 @@ class Card(NamedClass):
         }
         add_to_cost(dikt, extra_costs, cls.extra_effects)
 
-        def checK_status_cost(r, person="you"):
+        def check_status_cost(r, person="you"):
             # Helper for adding/subtracting cost for my/their status costs
-            ret = status_requirement(r)
-            if ret is not None:
+            # (Note that we don't split on OR, so just, like,
+            # put the one you want to count to score as the 1st one)
+            for ret in [status_requirement(s) for s in r.split("and")]:
+                if not ret:
+                    continue
                 status, gtlt, value = ret
                 # Should lower costs if it is 'hard' e.g, >5
                 cost = -value / 2
@@ -217,14 +231,18 @@ class Card(NamedClass):
                 dikt[f"{person} need {gtlt}{value} {status}"] = cost
 
 
+        other_requrements = {
+            "not touching": -1,
+            "was moved": -1,
+        }
         for r in cls.your_requirements:
-            checK_status_cost(r)
+            check_status_cost(r)
 
             add_to_cost(
                 dikt, cls.strike_types, r, key_add="your strike type")
 
             target = r
-            split_words = ["to their", "to them", "to your"]
+            split_words = ["to their", "to them", "to that", "to your"]
             for sw in split_words:
                 try:
                     weapon, target = target.split(sw)
@@ -244,27 +262,28 @@ class Card(NamedClass):
             if len(weapons) > 3:
                 dikt[f"many weapons: {weapons}"] = 0.5
 
+        from src.all_cards import Reaction
+        if issubclass(cls, Reaction):
+            dikt["reaction"] = 0.5
+
         for r in cls.their_requirements:
-            checK_status_cost(r, "they")
+            check_status_cost(r, "they")
 
             # If we are negating, it is better to negate worse
-            if "Negate" in cls.extra_effects:
-                add_to_cost(
-                    dikt, {k: 3 + v for k, v in cls.strike_types.items()},
-                    r, key_add="negate their strike type")
-            # If we are just reacting, it is better to react to more common
-            else:
-                add_to_cost(
-                    dikt, {k: v for k, v in cls.strike_types.items()},
-                    r, key_add="activate on their strike type")
+            if issubclass(cls, Reaction):
+                if "Negate" in cls.extra_effects:
+                    add_to_cost(
+                        dikt, {k: 3 + v for k, v in cls.strike_types.items()},
+                        r, key_add="negate their strike type")
+                # If we are just reacting, it is better to react to more common
+                else:
+                    add_to_cost(
+                        dikt, {k: v for k, v in cls.strike_types.items()},
+                        r, key_add="activate on their strike type")
 
             add_to_cost(
                 dikt, {k: -v.rarity for k, v in cls.stances.items()},
                 r, key_add="their stance")
-
-        from src.all_cards import Reaction
-        if issubclass(cls, Reaction):
-            dikt["reaction"] = 0.5
 
         return dikt
 
@@ -284,24 +303,24 @@ class Card(NamedClass):
         """
         Return the html str of this cards description
         """
-
-        # TODO html param/func?
-        your_string = ", ".join(
-            status_string(i) for i in cls.your_effects.items())
-        their_string = ", ".join(
-            status_string(i) for i in cls.their_effects.items())
-
         def replace_status_requirement(r):
             # If there is a > or < requirement for status,
             # use the pretty colors
-            ret = status_requirement(r)
-            if ret is None:
-                return r
 
-            status, gtlt, value = ret
-            replace_item = (status, f"{gtlt}{value}")
-            replace = status_string(replace_item)
-            return re.sub(rf'...{status}', replace, r)
+            # Split on both 'and' and 'or'
+            status_parts = [
+                status_requirement(s)
+                for s in r.replace("or", "and").split("and")
+            ]
+            for ret in status_parts:
+                if not ret:
+                    continue
+
+                status, gtlt, value = ret
+                replace_item = (status, f"{gtlt}{value}")
+                replace = status_string(replace_item)
+                r = re.sub(rf'...{status}', replace, r)
+            return r
 
         parsed_your_reqs = [
             replace_status_requirement(r) for r in cls.your_requirements
@@ -319,8 +338,24 @@ class Card(NamedClass):
             reqs += f"\nwhile they {tr}"
         if cls.your_requirements or cls.their_requirements:
             reqs += ":\n"
-
         statements = [r for r in [reqs] if r]
+
+        def sort_statuses(dikt):
+            # Order by:
+            # positives first, then by status order
+            s_dikt = sorted(
+                dikt.items(),
+                key=lambda item: (item[1] <= 0, status_order.index(item[0]))
+            )
+            return { k: v for k, v in s_dikt}
+        ye = sort_statuses(cls.your_effects)
+        te = sort_statuses(cls.their_effects)
+        your_string = ", ".join(
+            status_string(i) for i in ye.items())
+        their_string = ", ".join(
+            status_string(i) for i in te.items())
+
+
         if your_string:
             statements.append(
                 f"You get {your_string}\n")
@@ -335,7 +370,7 @@ class Card(NamedClass):
 
         # Emphasize the keywords that are important for the rules
         # TODO any extras?
-        from src.all_cards import Loss
+        from src.loss_cards import Loss
         if not issubclass(cls, Loss):
             keywords = (
                 set() | cls.hands

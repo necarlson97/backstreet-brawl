@@ -16,15 +16,13 @@ class Anubis():
 
     # How many we want of each category
     category_sizes = {
-        "Strike": 20,
-        "Grapple": 10,
-        "Pose": 10,
-        "Psych Out": 10,
-        "Reaction": 10,
-        "Control": 5,
+        "Strike": 25,
+        "Grapple": 15,
+        "Pose": 15,
+        "Psych Out": 15,
+        "Reaction": 15,
+        "Control": 10,
         "Movement": 5,
-        "Rule": 5,
-        "Loss": 8,
     }
 
     """
@@ -51,7 +49,7 @@ class Anubis():
         "rage": 0,
         "dignity": 0,
         "focus": int(-1.5 * desired_rounds),
-        "stamina": -1 * desired_rounds,
+        "stamina": int(-0.5 * desired_rounds),
     }
 
     @classmethod
@@ -167,6 +165,7 @@ class Anubis():
             for k in statuses
         }
 
+        # TODO by percent or something
         reccomendations = {
             "Need more": need_more,
             "Not enough minus on them":
@@ -174,7 +173,7 @@ class Anubis():
             "Not enough minus on you":
                 {k: v for k, v in your_minus.items() if v > -3},
             "Too much plus on you":
-                {k: v for k, v in your_plus.items() if v > 10},
+                {k: v for k, v in your_plus.items() if v > 15},
             "Not enough pluses on you":
                 {k: v for k, v in your_plus.items() if v < 6},
             "Not enough pluses on them":

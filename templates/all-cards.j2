@@ -43,19 +43,21 @@
         });
     </script>
 
-    {% set detailed_info, best_info = Anubis.status_totals() %}
-    <hr>
-    <h2> Balance Recommendations </h2>
-    <div class="col-info">{{ best_info }}</div>
-    <hr>
-    <h2> Category Totals </h2>
-    <div class="col-info">{{ Anubis.category_totals() }}</div>
-    <hr>
-    <h2> Balance Totals </h2>
-    <div class="col-info">{{ detailed_info }}</div>
+    <div class='totals'>
+        {% set detailed_info, best_info = Anubis.status_totals() %}
+        <hr>
+        <h2> Balance Recommendations </h2>
+        <div class="col-info">{{ best_info }}</div>
+        <hr>
+        <h2> Category Totals </h2>
+        <div class="col-info">{{ Anubis.category_totals() }}</div>
+        <hr>
+        <h2> Balance Totals </h2>
+        <div class="col-info">{{ detailed_info }}</div>
 
-    <h2> Part Totals </h2>
-    <div class="col-info">{{ Anubis.part_totals() }}</div>
+        <h2> Part Totals </h2>
+        <div class="col-info">{{ Anubis.part_totals() }}</div>
+    </div>
 
     <div style="white-space: pre-line;">
         <h1> Backstreet Brawl </h1>
@@ -68,6 +70,7 @@
         Each player draws {{ Anubis.draw_size }} action cards.
         Place your figure in the stand, upright.
         (You can have their hands/arms however you like)
+        Lay out the rule-reminder cards (Keep Breathing, Switch Grip, etc)
 
         Whichever player has a bigger bruise goes first.
         If neither is bruised, whoever bled last.
@@ -91,7 +94,7 @@
 
         During your turn, you play as many cards as you like, and can simply discard any you don't want.
 
-        If you have a <b> Reaction </b> card, you can play it during your opponents turn. They may require you to see if you can move a limb to block. If you can't complete that requirement, move the limb you tried back to where it was, and put the reaction back in your hand.
+        If you have a <b> Reaction </b> card, you can play it during your opponents turn. They may require you to see if you can move a limb to block - you still have to spend stamina on this. If you can't complete that requirement, move the limb you tried back to where it was, and put the reaction back in your hand.
 
         You can be in multiple stances at once, e.g.: a low squat could be 'crouching' or 'sitting'.
         This means you can play cards that apply to either.

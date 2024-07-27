@@ -4,16 +4,20 @@
     {% set short_desc = desc|length < 800 and desc.count('\n') < 8 %}
     <div class="card">
         <div class="card-header">
-            <span class="card-name">{{ card_type.human_name() }}</span>
-            <span class="card-cost"  title="{{card_type.get_cost_breakdown()}}">
-                {{ card_type.get_cost() if card_type.get_cost()|abs > 0.5 else "-"}}
-            </span>
+            <div class="card-title" title="{{card_type.get_cost_breakdown()}}">
+                <span class="card-name">{{ card_type.human_name() }}</span>
+                <span class="card-cost">
+                    {{ card_type.get_cost() if card_type.get_cost()|abs > 0.5 else ""}}
+                </span>
+            </div>
+            {% if cat !=  "Loss" %}
+                <i class="card-category">{{ cat }}</i>
+            {% endif %}
         </div>
-        {% if cat !=  "Loss" %}
-            <i class="card-category">{{ cat }}</i>
-        {% endif %}
         {% if short_desc %}
             <img src="images/{{ card_type.name }}.png" class="card-image">
+        {% else %}
+            <div style="height: 3.7em"></div>
         {% endif %}
         <div class="card-body {{'long-desc' if not short_desc else ""}}">
             <span class='{{cat.lower()}} card-desc'>{{desc}} </span>

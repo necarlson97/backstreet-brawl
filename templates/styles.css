@@ -65,6 +65,9 @@ Unused colors:
 .col-info > div > span {
     display: block;
 }
+.col-info .plus {
+    text-decoration: underline red;
+}
 
 .light-mode {
   --bg: white;
@@ -128,24 +131,35 @@ h2 {
 }
 
 .card-header {
+    position: absolute;
+    width: 5.9cm;
+}
+
+.card-title {
     font-weight: bold;
     font-size: 1.9em;
     display: flex;
     justify-content: space-between;
     align-items: stretch; /* Ensures that children stretch to fill the height */
-    background-color: var(--bg);
-    padding: .3em;
-    padding-top: .1em;
-    padding-bottom: 0em;
 }
 
 .card-name {
-    flex-grow: 1; /* Allows the element to grow and take up available space */
     display: flex;
     align-items: center;
+    padding: 0em .2em;
+}
+.card-name, .card-category {
+    color: white !important;
+    background-color: rgba(0, 0, 0, .5);
+    margin: 0em;
 }
 .card-cost {
-    color: var(--subtle);
+/*    color: var(--subtle);*/
+    color: red;
+}
+.card-category {
+    padding: 0em 0.3em .3em .3em;
+    vertical-align: top;
 }
 
 .card-heat, .card-number {
@@ -160,13 +174,13 @@ h2 {
 }
 
 .card-image {
-    width: auto;
-    min-height: 4.5cm;
-    max-height: 4.5cm;
-    height: 4.5cm;
+    width: 100%;
+    height: auto;
+    min-height: 5cm;
 
     object-fit: contain;
     object-position: bottom;
+    margin-bottom: .3em;
 }
 .life-image {
     width: auto;
@@ -208,9 +222,6 @@ hr {
     white-space: pre-line;
     margin-top: auto;
     text-align: center;
-}
-.card-category {
-    padding-left: 0.3em;
 }
 
 table {

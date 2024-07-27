@@ -6,7 +6,10 @@ from abc import ABCMeta
 Module of handy utilities
 """
 
-# TODO clamp
+status_order = [
+    "focus", "rage", "dignity", "stamina",
+    "oxygen", "blood", "pain tolerance", "senses",
+]
 
 def camel_to_hypens(text):
     return re.sub('([a-z0-9])([A-Z])', '\\1-\\2', text).lower()
@@ -20,12 +23,7 @@ def status_requirement(s):
     # Return the (string, > or <, value)
     # for a requirement that is like ">2 stamina"
 
-    # TODO is this really not defined elsewhere?
-    statuses = [
-        "focus", "rage", "dignity", "stamina",
-        "oxygen", "blood", "pain tolerance", "senses",
-    ]
-    for status in statuses:
+    for status in status_order:
         if status not in s:
             continue
         gtlt = ">" if ">" in s else "<"
