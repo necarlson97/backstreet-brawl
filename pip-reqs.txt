@@ -1,3 +1,4 @@
 Jinja2
+openai
 
 # Also inotify-tools if you want to watch & regen printout on changes

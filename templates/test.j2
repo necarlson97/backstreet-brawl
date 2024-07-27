@@ -7,12 +7,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<body style="font-size: 1.3em;">
-
-{% for card_type in Card.sorted_types() %}
-    {% if card_type.flavor_text and 'todo' not in card_type.flavor_text.lower() %}
-        <div> {{ card_type.flavor_text  }} </div>
-    {% endif %}
+<body style="font-size: 1.3em; padding: 0em; margin: 0em;">
+{% for url in ImageGen.list_recent()|reverse %}
+<img src="{{ url }}" style="max-width: 49%; display: initial;" alt="Generated Image">
 {% endfor %}
 
 </body>
