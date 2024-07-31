@@ -27,9 +27,11 @@ class SharpJab(Strike):
     your_requirements = [
         "smack a fist into them anywhere"
     ]
+    your_effects = {
+        "focus": +1,
+    }
     their_effects = {
         "senses": +1,
-        "stamina": -1,
         "pain tolerance": -1,
     }
     flavor_text = (
@@ -60,6 +62,8 @@ class Haymaker(Strike):
     your_requirements = [
         "smash a fist into them anywhere"
     ]
+    your_effects = {
+    }
     their_effects = {
         "blood": -1,
         "pain tolerance": -1,
@@ -83,11 +87,12 @@ class CheekSlap(Strike):
     )
 class Knifehand(Strike):
     your_requirements = [
-        "smash a flat palm into their neck"
+        "smack a flat palm into their neck"
     ]
     your_effects = {
-        "senses": -1,
-        "focus": +1,
+        "pain tolerance": -1,
+        "focus": -1,
+        "dignity": +1,
     }
     their_effects = {
         "oxygen": -2,
@@ -154,10 +159,9 @@ class Uppercut(Strike):
 class SolidHook(Strike):
     your_requirements = [
         "smack a fist into them anywhere",
-        "have your elbow on‑level with that fist"
+        "have your elbow on-level with that fist"
     ]
     your_effects = {
-        "focus": -1,
     }
     their_effects = {
         "pain tolerance": -1,
@@ -207,7 +211,7 @@ class FootStrike(Strike):
         "smack a foot into them anywhere"
     ]
     your_effects = {
-        "oxygen": +1,
+        "focus": +1,
     }
     their_effects = {
         "senses": +1,
@@ -322,7 +326,8 @@ class ElbowDagger(Strike):
     }
     their_effects = {
         "blood": -1,
-        "senses": -2,
+        "senses": -1,
+        "oxygen": -1,
     }
     flavor_text = (
         '"If God built me a ladder to heaven, I\'d climb to the top '
@@ -399,9 +404,10 @@ class HeadHarpoon(Strike):
     your_effects = {
         "blood": +1,
         "rage": +1,
+        "senses": -1,
     }
     their_effects = {
-        "blood": -1,
+        "blood": -2,
         "senses": -1,
     }
     flavor_text = (
@@ -414,10 +420,11 @@ class GrindingHeadbutt(Strike):
     ]
     your_effects = {
         "stamina": +1,
-        "oxygen": +1,
+        "blood": +1,
+        "senses": -1,
     }
     their_effects = {
-        "senses": -1,
+        "senses": -2,
         "pain tolerance": -1,
     }
     flavor_text = (
@@ -483,7 +490,8 @@ class GnawFace(Grapple):
         "touch your head to their head"
     ]
     your_effects = {
-        "focus": -2,
+        "focus": -1,
+        "senses": -1,
     }
     their_effects = {
         "blood": -1,
@@ -579,12 +587,12 @@ class LegLock(Grapple):
         "touch a grasp hand to their calf or foot"
     ]
     your_effects = {
-        "focus": +1,
+        "oxygen": +1,
         "pain tolerance": +1,
     }
     their_effects = {
         "pain tolerance": -1,
-        "senses": -1,
+        "stamina": -1,
     }
     flavor_text = (
         '"The more you sweat in peace, the less you bleed in war." '
@@ -621,7 +629,7 @@ class WristLock(Grapple):
     their_effects = {
         "rage": +1,
         "pain tolerance": -2,
-        "stamina": -1,
+        "senses": -1,
     }
     flavor_text = (
         '"I saw his true color, and that color was yellow" ~ BJ Flores'
@@ -721,9 +729,11 @@ class Legerdemain(PsychOut):
         "smack a grasp hand to them anywhere"
     ]
     your_effects = {
+        "pain tolerance": +1,
     }
     their_effects = {
         "focus": -1,
+        "oxygen": +1,
     }
     flavor_text = (
         '"I never wanted to be the next Bruce Lee.\n'
@@ -769,7 +779,7 @@ class SubtleTaunt(PsychOut):
 class GoadingChin(PsychOut):
     your_requirements = [
         "are not prone",
-        "have both hands on‑level or below their elbow",
+        "have both hands on-level or below their elbow",
     ]
     their_requirements = [
         "have >4 rage",
@@ -845,7 +855,7 @@ class SnideSnort(PsychOut):
         "oxygen": -1,
     }
     their_effects = {
-        "senses": -1,
+        "dignity": -1,
     }
     flavor_text = (
         '"A quick temper will make a fool of you soon enough."\n~ Bruce Lee'
@@ -922,7 +932,7 @@ class LowSprawl(Pose):
     )
 class Zenkutsu(Pose):
     your_requirements = [
-        "are crouching, with feet spaced > a limb‑length apart",
+        "are crouching, with feet spaced > a limb-length apart",
         "have both hands between your waist-height and chest-height",
     ]
     your_effects = {
@@ -1122,7 +1132,7 @@ class BodyScan(Pose):
 class ShareAir(Pose):
     your_requirements = [
         "have <5 rage and >2 dignity",
-        "your torso is < a forearm‑length from theirs",
+        "your torso is < a forearm-length from theirs",
     ]
     your_effects = {
         "focus": +1,
@@ -1173,7 +1183,7 @@ class SweepLeg(Control):
         "stamina": -1,
     }
     their_effects = {
-        "pain tolerance": -1
+        "pain tolerance": -1,
     }
     extra_effects = "You can move that limb any way you like"
     flavor_text = (
@@ -1191,7 +1201,7 @@ class DoorKick(Control):
         "blood": -1
     }
     extra_effects = (
-        "You can move their hips a limb‑length away.\n"
+        "You can move their hips a limb-length away.\n"
         "Any part on the ground tries to stay in place."
     )
     flavor_text = (
@@ -1246,7 +1256,7 @@ class ShoulderSlam(Control):
     their_effects = {
     }
     extra_effects = (
-        "You can move their hips a forearm‑length away.\n"
+        "You can move their hips a forearm-length away.\n"
         "Any part on the ground tries to stay in place."
     )
     flavor_text = (
@@ -1311,7 +1321,7 @@ class Movement(Card, ABC):
     pass
 class TuckJump(Movement):
     your_requirements = [
-        "lift both feet above knee‑level"
+        "lift both feet above knee-level"
     ]
     your_effects = {
         "oxygen": -1,
@@ -1329,7 +1339,7 @@ class HighJump(Movement):
         "stamina": -1,
     }
     extra_effects = (
-        "Move your hips a limb‑length in any direction"
+        "Move your hips a limb-length in any direction"
     )
     flavor_text = (
         '"What we do in life echoes in eternity." ~ Maximus'
@@ -1354,11 +1364,15 @@ class KickBack(Movement):
         "touch a foot to their torso",
     ]
     your_effects = {
-        "senses": -1,
+        "senses": +1,
         "stamina": +1,
     }
+    their_effects = {
+        "senses": +1,
+        "focus": +1,
+    }
     extra_effects = (
-        "Move your hips a limb‑length away"
+        "Move your hips a limb-length away"
     )
     flavor_text = (
         '"A warrior never worries about his fear." ~ Carlos Castaneda'
@@ -1372,10 +1386,10 @@ class KipUp(Movement):
     your_effects = {
         "stamina": -1,
         "dignity": +2,
-        "focus": +1,
+        "oxygen": +1,
     }
     extra_effects = (
-        "Move your hips a limb‑length up, keeping your feet on the ground"
+        "Move your hips a limb-length up, keeping your feet on the ground"
     )
     flavor_text = (
         '"The spirit of a warrior never breaks, it only bends."'
@@ -1451,10 +1465,10 @@ class GetThereFirst(Reaction):
         "Negate their card's effects on you"
     )
     your_effects = {
-        "oxygen": -1,
+        "focus": -1,
     }
     their_effects = {
-        "focus": -1,
+        "senses": -1,
     }
     flavor_text = (
         '"Cry in the dojo, laugh on the battlefield." ~ uri Pazarán'
@@ -1470,7 +1484,7 @@ class RetreatingShrimp(Reaction):
         "stamina": +1,
     }
     extra_effects = (
-        "Move your hips a limb‑length away"
+        "Move your hips a limb-length away"
     )
     flavor_text = (
         '"Notice that the stiffest tree is most easily cracked,\n'
@@ -1647,8 +1661,8 @@ class ContactRules(Rule):
         "Most cards require some kind of contact. smack/smash require that "
         "the limb has moved during this turn to get to it's destination:"
         "<hr>"
-        "smack - moved at least a forearm‑length\n"
-        "smash - moved at least a limb‑length \n"
+        "smack - moved at least a forearm-length\n"
+        "smash - moved at least a limb-length \n"
     )
 class SwitchGrip(Rule):
     your_effects = {
@@ -1693,9 +1707,34 @@ focus drops to 2?
 drunken master - bonus for being off balance
 crush windpipe - mix of throat punch and thumb strangle, like clinch punch
 judo flip - control reaction
+Sticky Hands - reaction to get oxy/pain, at the cost of focus. Like legerdemain?
 
 Would introduce 'card meta stuff' - but I have some interest in
 'reveal X cards to player' as a way of 'being predictable',
 but also players could use to trick/feint.
 ...
+
+Revisit stats:
+headbutts can take up some of the -senses to player
+maybe control cards give +oxy to enemy, because it takes a second to judo flip?
+Maybe basic attacks can give +1 focus
+How we doing on categories
+...
+
+TODO could have a card that is like
+'What happens when you go over 6', and for each it is like:
+
+Overfull Lungs: -1 pain tolerance
+Overstimulated Blood: nothing
+Numb to Pain: focus +1
+Hyper-aware: focus -1
+Maddening Rage: focus -1
+Haughty Dignity: blood -1
+Hyper-focused: rage -1, dignity +1
+Exhilarating Stamina: nothing
+
+Could rename 'vasoconstrict' something more lkke
+'draw blood to core' -but vaso sounds coool
+
+You know, I kinda want to replace all < with <=
 """

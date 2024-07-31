@@ -6,9 +6,15 @@
         <div class="card-header">
             <div class="card-title" title="{{card_type.get_cost_breakdown()}}">
                 <span class="card-name">{{ card_type.human_name() }}</span>
-                <span class="card-cost">
-                    {{ card_type.get_cost() if card_type.get_cost()|abs > 0.5 else ""}}
-                </span>
+                {%  if card_type.get_cost()|abs > 0.5 %}
+                    <span class="card-cost">
+                        {{ card_type.get_cost() }}
+
+                        {# So we can ctrl+f 'cost' #}
+                        <span style="font-size: .5em;">
+                        cost </span >
+                    </span>
+                {% endif %}
             </div>
             {% if cat !=  "Loss" %}
                 <i class="card-category">{{ cat }}</i>

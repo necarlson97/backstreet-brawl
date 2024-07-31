@@ -85,7 +85,7 @@ class Card(NamedClass):
             desc="at least one limb on the ground"),
         "airborne": Stance(
             name='airborne', rarity=2, stamina=2, focus=0,
-            desc="nothing touching ground"),
+            desc="nothing on the ground"),
     }
 
     # Parts of a requirement, and how much these keywords effect cost
@@ -240,10 +240,10 @@ class Card(NamedClass):
                     cost = -4 + (value / 2)
                 dikt[f"{person} need {gtlt}{value} {status}"] = cost
 
-
         other_requrements = {
-            "not touching": -1,
+            "not touching": -0.5,
             "was moved": -1,
+            "on-level": -0.5,
         }
         for r in cls.your_requirements:
             check_status_cost(r)
@@ -251,13 +251,15 @@ class Card(NamedClass):
             add_to_cost(
                 dikt, cls.strike_types, r, key_add="your strike type")
 
+            add_to_cost(dikt, other_requrements, r)
+
             target = r
             split_words = ["to their", "to them", "to that", "to your"]
             for sw in split_words:
                 try:
                     weapon, target = target.split(sw)
                     break
-                except:
+                except ValueError:
                     weapon, target = ("", target)
 
             add_to_cost(
@@ -388,6 +390,10 @@ class Card(NamedClass):
             )
             for keyword in keywords:
                 s = s.replace(keyword, f"<b class='{keyword}'>{keyword}</b>")
+
+        # For now, consider all hypens as 'non breaking',
+        # so replace them with non-break unicode variant
+        s = s.replace('-', '‑')
 
         return s.strip()
 
