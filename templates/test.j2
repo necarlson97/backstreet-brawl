@@ -8,7 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body style="font-size: 1.3em; padding: 0em; margin: 0em;">
-{% for url in ImageGen.list_recent()|reverse %}
+
+{# <meta http-equiv="refresh" content="20"> #}
+{% for url in ImageGen.list_recent()[:10] %}
 <img src="{{ url }}" style="max-width: 49%; display: initial;" alt="Generated Image">
 {% endfor %}
 

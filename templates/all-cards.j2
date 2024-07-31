@@ -43,7 +43,7 @@
         });
     </script>
 
-    <div class='totals'>
+    <div class='totals no-print'>
         {% set detailed_info, best_info = Anubis.status_totals() %}
         <hr>
         <h2> Balance Recommendations </h2>
@@ -59,7 +59,7 @@
         <div class="col-info">{{ Anubis.part_totals() }}</div>
     </div>
 
-    <div style="white-space: pre-line;">
+    <div style="white-space: pre-line;" class="no-print">
         <h1> Backstreet Brawl </h1>
         Whatever was said, it doesn't matter now.
         What matters is throwing fists. And winning.
@@ -100,9 +100,7 @@
         This means you can play cards that apply to either.
         (For something like 'Keep Breathing', you can choose the better stance, but not stack multiple.)
 
-        {# TODO other rules #}
-        # TODO make these lose cards, because why not.
-        Could even, if I wanted, write 2, one for each player.
+        (If you are playing against multiple opponents, and play a psych out or other card without an obvious target, you can choose.)
     </div>
 
 </body>

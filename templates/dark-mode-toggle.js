@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   var currentHour = new Date().getHours();
 
   // If the current hour is less than 21 (9 PM), switch to light mode
-  if (currentHour < 21 && currentHour > 8) {
+  if (currentHour < 21 && currentHour > 7) {
     ToggleDarkmode()
   }
 });

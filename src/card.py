@@ -69,17 +69,17 @@ class Card(NamedClass):
         "standing": Stance(
             name='standing', rarity=1, stamina=2, focus=2,
             desc="feet flat on ground, hips aligned between the feet, "
-                 "hips above knee-level"),
+                 "hips above knee‑level"),
         "crouching": Stance(
             name='crouching', rarity=1, stamina=1, focus=2,
             desc="feet on ground, hips aligned between the feet, "
-                 "hips above knee-level"),
+                 "hips above knee‑level"),
         "sitting": Stance(
             name='sitting', rarity=2, stamina=2, focus=1,
-            desc="hips below knee-level, chest above knee-level"),
+            desc="hips below knee‑level, chest above knee‑level"),
         "prone": Stance(
             name='prone', rarity=2, stamina=3, focus=0,
-            desc="hips and chest below knee-level"),
+            desc="hips and chest below knee‑level"),
         "off balance": Stance(
             name='off balance', rarity=1, stamina=2, focus=-1,
             desc="at least one limb on the ground"),
@@ -121,7 +121,7 @@ class Card(NamedClass):
 
     # The switchable magnetic hands names
     # TODO okay to put foot here?
-    hands = {"fist", "flat palm", "grasp hand", "foot"}
+    hands = {"fist", "flat palm", "grasp hand"}
 
     # How many times does it appear in the deck?
     # TODO slightly different images?
@@ -146,6 +146,7 @@ class Card(NamedClass):
         # TODO SLOPPY
         if ABC not in cls.__bases__:
             cls.all_types[cls.__name__] = cls
+            cls.index = len(cls.all_types)
 
             # TODO SLOPPY
             for existing in cls.all_types.values():
@@ -214,6 +215,15 @@ class Card(NamedClass):
             "rotate your": 2,
         }
         add_to_cost(dikt, extra_costs, cls.extra_effects)
+        # If extra costs has a requirement...
+        # TODO just considers stance, should break out entire req check into
+        # separate function, than call here.
+        if 'if' in cls.extra_effects.lower():
+            extra_req, _ = cls.extra_effects.lower().split(',')
+            add_to_cost(
+                dikt, {k: -v.rarity for k, v in cls.stances.items()},
+                extra_req, key_add="extra req"
+            )
 
         def check_status_cost(r, person="you"):
             # Helper for adding/subtracting cost for my/their status costs
@@ -403,11 +413,13 @@ class Card(NamedClass):
 
     @classmethod
     def real_cards(cls):
-        not_real_cards = ["Rule", "Loss"]
         return [
             ct for ct in cls.all_types.values()
-            if ct.get_category() not in not_real_cards
+            if ct.is_real()
         ]
+    @classmethod
+    def is_real(cls):
+        return cls.get_category() not in ["Rule", "Loss"]
 
     @classmethod
     def get_hand(cls):

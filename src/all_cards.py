@@ -52,8 +52,8 @@ class BloodyNose(Strike):
         "pain tolerance": -1,
     }
     flavor_text = (
-        '"It\'s like someone jammed an electric light bulb in your face, '
-        'and busted it. I thought half my head was blowed off..." '
+        '"It\'s like someone jammed an electric light bulb in your face,\n'
+        'and busted it. I thought half my head was blowed off..."\n'
         '~ James J Braddock'
     )
 class Haymaker(Strike):
@@ -65,7 +65,7 @@ class Haymaker(Strike):
         "pain tolerance": -1,
     }
     flavor_text = (
-        '"Sure the fight was fixed. I fixed it with a right hand." '
+        '"Sure the fight was fixed. I fixed it with a right hand."\n'
         '~ George Foreman'
     )
 class CheekSlap(Strike):
@@ -95,7 +95,7 @@ class Knifehand(Strike):
         "senses": -1,
     }
     flavor_text = (
-        '"Remember... you are expressing the technique, '
+        '"Remember... you are expressing the technique,\n'
         'not doing the technique" ~ Bruce Lee'
     )
 class Hammerfist(Strike):
@@ -114,7 +114,7 @@ class Hammerfist(Strike):
         "senses": -2,
     }
     flavor_text = (
-        '"Before you embark on a journey of revenge, dig two graves." '
+        '"Before you embark on a journey of revenge, dig two graves."\n'
         '~ Confucius'
     )
 class ThroatPunch(Strike):
@@ -148,13 +148,13 @@ class Uppercut(Strike):
         "focus": -1,
     }
     flavor_text = (
-        '"Strength is born from the struggle, not the victory." '
+        '"Strength is born from the struggle, not the victory."\n'
         '~ Arnold Schwarzenegger'
     )
 class SolidHook(Strike):
     your_requirements = [
         "smack a fist into them anywhere",
-        "have your elbow on-level with that fist"
+        "have your elbow on‑level with that fist"
     ]
     your_effects = {
         "focus": -1,
@@ -214,8 +214,8 @@ class FootStrike(Strike):
         "pain tolerance": -1,
     }
     flavor_text = (
-        '"Fear not who has practiced 10,000 kicks once, '
-        'but who has practiced one kick 10,000 times." ~ Bruce Lee'
+        '"Fear not who has practiced 10,000 kicks once,\n'
+        'but who has practiced one kick 10,000 times."\n~ Bruce Lee'
     )
 class CurbStomp(Strike):
     your_requirements = [
@@ -309,8 +309,8 @@ class KneeBomb(Strike):
         "blood": -1,
     }
     flavor_text = (
-        '"Do not to think of whether it ends in victory or defeat. '
-        'Let nature take its course, and your tools '
+        '"Do not to think of whether it ends in victory or defeat.\n'
+        'Let nature take its course, and your tools\n'
         'will strike at the right moment." ~ Bruce Lee'
     )
 class ElbowDagger(Strike):
@@ -389,25 +389,7 @@ class RainBlows(Strike):
         "senses": -2,
     }
     flavor_text = (
-        '"A fighter takes a punch, and hits back with three." ~ Roberto Duran'
-    )
-class LightShove(Strike):
-    your_requirements = [
-        "touch a flat palm to their torso"
-    ]
-    their_requirements = [
-        "are standing or crouching"
-    ]
-    your_effects = {
-        "senses": +2,
-        "oxygen": +1,
-    }
-    their_effects = {
-        "blood": +1,
-    }
-    flavor_text = (
-        '"Obstacles cannot crush me;\n'
-        'every obstacle yields to stern resolve" ~ Leonardo Da Vinci'
+        '"A fighter takes a punch, and hits back with three."\n~ Roberto Duran'
     )
 class HeadHarpoon(Strike):
     your_requirements = [
@@ -423,13 +405,12 @@ class HeadHarpoon(Strike):
         "senses": -1,
     }
     flavor_text = (
-        '"Power is not revealed by striking hard or often, '
+        '"Power is not revealed by striking hard or often,\n'
         'but by striking true" ~ Balzac'
     )
 class GrindingHeadbutt(Strike):
     your_requirements = [
-        "smack your head into their head",
-        "touch a grasping hand to the other side of their head"
+        "sandwich their head between your head and your grasp hand"
     ]
     your_effects = {
         "stamina": +1,
@@ -486,7 +467,8 @@ class DesperateBite(Grapple):
         "touch your head to them anywhere"
     ]
     your_effects = {
-        "focus": -2,
+        "focus": -1,
+        "dignity": -1,
     }
     their_effects = {
         "blood": -2,
@@ -501,8 +483,7 @@ class GnawFace(Grapple):
         "touch your head to their head"
     ]
     your_effects = {
-        "focus": -1,
-        "dignity": -1,
+        "focus": -2,
     }
     their_effects = {
         "blood": -1,
@@ -607,7 +588,7 @@ class LegLock(Grapple):
     }
     flavor_text = (
         '"The more you sweat in peace, the less you bleed in war." '
-        '~ Norman Schwarzkopf'
+        '\n~ Norman Schwarzkopf'
     )
 class ArmBar(Grapple):
     your_requirements = [
@@ -651,7 +632,7 @@ class HangingBind(Grapple):
         "wrap at least two limbs around them",
     ]
     their_requirements = [
-        "are standing or crouching"
+        "are standing, crouching, or off balance"
     ]
     your_effects = {
         "dignity": +1,
@@ -699,7 +680,7 @@ class TapOut(PsychOut):
         "rage": -1,
     }
     flavor_text = (
-        '"To see a man beaten not by a better opponent '
+        '"To see a man beaten not by a better opponent\n'
         'but by himself is a tragedy." ~ Cus D\'Amato'
     )
 class FauxWhiteFlag(PsychOut):
@@ -714,7 +695,7 @@ class FauxWhiteFlag(PsychOut):
         "dignity": +1,
     }
     flavor_text = (
-        '"The psychology of brutality was worse than the beatings." '
+        '"The psychology of brutality was worse than the beatings."\n'
         '~ John Blair'
     )
 class BegAndPlead(PsychOut):
@@ -745,7 +726,7 @@ class Legerdemain(PsychOut):
         "focus": -1,
     }
     flavor_text = (
-        '"I never wanted to be the next Bruce Lee. '
+        '"I never wanted to be the next Bruce Lee.\n'
         'I just wanted to be the first Jackie Chan" ~ Jackie Chan'
     )
 class BobAndWeave(PsychOut):
@@ -785,10 +766,10 @@ class SubtleTaunt(PsychOut):
         '"For it is easy to criticize and break down the spirit of others, '
         'but to know yourself takes a lifetime." ~ Bruce Lee'
     )
-class GoadingPout(PsychOut):
+class GoadingChin(PsychOut):
     your_requirements = [
         "are not prone",
-        "have both hands below their elbow",
+        "have both hands on‑level or below their elbow",
     ]
     their_requirements = [
         "have >4 rage",
@@ -800,7 +781,7 @@ class GoadingPout(PsychOut):
         "rage": -3,
     }
     flavor_text = (
-        '''"You're just an average bloke, I'm a fucking samurai." '''
+        '''"You're just an average bloke,\nI'm a fucking samurai." '''
         '~ Luke Rockhold'
     )
 class HurlObsecenites(PsychOut):
@@ -818,7 +799,7 @@ class HurlObsecenites(PsychOut):
         "focus": -1,
     }
     flavor_text = (
-        '"If you don\'t want to slip up tomorrow, speak the truth today." '
+        '"If you don\'t want to slip up tomorrow,\nspeak the truth today." '
         '~ Bruce Lee'
     )
 class OpenlyJeer(PsychOut):
@@ -837,8 +818,8 @@ class OpenlyJeer(PsychOut):
         "focus": -1,
     }
     flavor_text = (
-        '"His mouth made him feel like he was gonna win.\n'
-        'Not his hands, I had my hands. He had his lips." ~ Joe Frazier'
+        '''"If you even dream of beating me\n'''
+        '''you'd better wake up and apologize." ~ Muhammad Ali'''
     )
 class SternWord(PsychOut):
     your_requirements = [
@@ -852,10 +833,10 @@ class SternWord(PsychOut):
         "dignity": -2,
     }
     flavor_text = (
-        '"If a man has enough power, he can speak softly '
+        '"If a man has enough power, he can speak softly\n'
         'and everyone will listen" ~ Jake Roberts'
     )
-class SharpSnort(PsychOut):
+class SnideSnort(PsychOut):
     your_requirements = [
         "have >3 rage"
     ]
@@ -867,7 +848,7 @@ class SharpSnort(PsychOut):
         "senses": -1,
     }
     flavor_text = (
-        '"A quick temper will make a fool of you soon enough." ~ Bruce Lee'
+        '"A quick temper will make a fool of you soon enough."\n~ Bruce Lee'
     )
 class CrushPedistal(PsychOut):
     your_requirements = [
@@ -905,7 +886,7 @@ class FistfulOfHair(PsychOut):
         "senses": -1,
     }
     flavor_text = (
-        '"Do you think I’m just going to sit there '
+        '"Do you think I’m just going to sit there\n'
         'and let you kill me?" ~ Daniel Cormier'
     )
 class FeedOff(PsychOut):
@@ -941,7 +922,7 @@ class LowSprawl(Pose):
     )
 class Zenkutsu(Pose):
     your_requirements = [
-        "are crouching, with one foot far forward and one far back",
+        "are crouching, with feet spaced > a limb‑length apart",
         "have both hands between your waist-height and chest-height",
     ]
     your_effects = {
@@ -952,13 +933,13 @@ class Zenkutsu(Pose):
         "dignity": -1,
     }
     flavor_text = (
-        '"Truth has no path. Truth is living and, therefore, changing." '
+        '"Truth has no path. Truth is living and, therefore, changing."\n'
         '~ Bruce Lee'
     )
 class Mabu(Pose):
     your_requirements = [
         "are crouching, with feet parallel",
-        "have both hands below waist-height",
+        "have both hands at or below your waist",
     ]
     your_effects = {
         "senses": +1,
@@ -968,7 +949,7 @@ class Mabu(Pose):
         "dignity": -1,
     }
     flavor_text = (
-        '"A wise man can learn more from a foolish question '
+        '"A wise man can learn more from a foolish question\n'
         'than a fool can learn from a wise answer." ~ Bruce Lee'
     )
 class GulpAir(Pose):
@@ -982,7 +963,7 @@ class GulpAir(Pose):
         "senses": -1,
     }
     flavor_text = (
-        '''"Once that bell rings you're on your own. '''
+        '''"Once that bell rings you're on your own.\n'''
         '''It's just you and the other guy." ~ Joe Louis'''
     )
 class RawHowl(Pose):
@@ -1018,7 +999,7 @@ class SlowBreathing(Pose):
         "blood": +1,
     }
     flavor_text = (
-        '"Life itself is your teacher, '
+        '"Life itself is your teacher,\n'
         'and you are in a state of constant learning." ~ Bruce Lee'
     )
 class LionsBreath(Pose):
@@ -1056,7 +1037,7 @@ class CrossGaurd(Pose):
     )
 class Vasoconstrict(Pose):
     your_requirements = [
-        "prone",
+        "are prone",
         "at least one limb fully extended"
     ]
     your_effects = {
@@ -1066,11 +1047,11 @@ class Vasoconstrict(Pose):
     }
     flavor_text = (
         '"There are no limits. There are plateaus, but you must not stay there, '
-        'you must go beyond them. If it kills you, it kills you." ~ Bruce Lee'
+        'you must go beyond them. If it kills you, it kills you."\n~ Bruce Lee'
     )
 class FetalCurl(Pose):
     your_requirements = [
-        "prone",
+        "are prone",
         "at least two feet or hands touching torso or head"
     ]
     your_effects = {
@@ -1079,7 +1060,8 @@ class FetalCurl(Pose):
         "focus": +1,
     }
     flavor_text = (
-        '"Everybody got a plan\ntil they get punched in the face."" - Mike Tyson'
+        '"Everybody got a plan\n'
+        '\'til they get punched in the face." - Mike Tyson'
     )
 class StayDown(Pose):
     your_requirements = [
@@ -1093,7 +1075,7 @@ class StayDown(Pose):
         "pain tolerance": +1,
     }
     flavor_text = (
-        '"When he knocked me down I could have stayed there for three weeks." '
+        '"When he knocked me down\nI could have stayed there for three weeks." '
         '~ James J Braddock'
     )
 class CoverUp(Pose):
@@ -1121,7 +1103,7 @@ class StayGrounded(Pose):
         "focus": +2
     }
     flavor_text = (
-        '"Life is really simple, but we insist on making it complicated." '
+        '"Life is really simple,\nbut we insist on making it complicated." '
         '~ Confucius'
     )
 class BodyScan(Pose):
@@ -1134,13 +1116,13 @@ class BodyScan(Pose):
         "dignity": +1,
     }
     flavor_text = (
-        '"The successful warrior is the average man, '
+        '"The successful warrior is the average man,\n'
         'with laser-like focus." ~ Bruce Lee'
     )
 class ShareAir(Pose):
     your_requirements = [
         "have <5 rage and >2 dignity",
-        "your torso is < a forearm-length from theirs",
+        "your torso is < a forearm‑length from theirs",
     ]
     your_effects = {
         "focus": +1,
@@ -1180,7 +1162,7 @@ class SlapAway(Control):
     }
     extra_effects = "You can move that limb any way you like"
     flavor_text = (
-        '"It\'s not the daily increase but daily decrease. '
+        '"It\'s not the daily increase but daily decrease.\n'
         'Hack away at the unessential." ~ Bruce Lee'
     )
 class SweepLeg(Control):
@@ -1209,7 +1191,7 @@ class DoorKick(Control):
         "blood": -1
     }
     extra_effects = (
-        "You can move their hips a limb-length away.\n"
+        "You can move their hips a limb‑length away.\n"
         "Any part on the ground tries to stay in place."
     )
     flavor_text = (
@@ -1256,7 +1238,7 @@ class LeapingTackle(Control):
     )
 class ShoulderSlam(Control):
     your_requirements = [
-        "smack your torso into their torso",
+        "smack your torso or bicep into their torso",
     ]
     your_effects = {
         "oxygen": -1,
@@ -1264,11 +1246,11 @@ class ShoulderSlam(Control):
     their_effects = {
     }
     extra_effects = (
-        "You can move their hips a forearm-length away.\n"
+        "You can move their hips a forearm‑length away.\n"
         "Any part on the ground tries to stay in place."
     )
     flavor_text = (
-        '"Act like a man of thought – Think like a man of action." '
+        '"Act like a man of thought – Think like a man of action."\n'
         '~ Thomas Mann'
     )
 class Powerslam(Control):
@@ -1299,7 +1281,29 @@ class CannonBall(Control):
         "Rotate and lower them to a prone position.\n"
     )
     flavor_text = (
-        '''"I'm not God, but I am something similar." ~ Roberto Duran'''
+        '''"I'm not God, but I am something similar."\n~ Roberto Duran'''
+    )
+class LightShove(Control):
+    your_requirements = [
+        "touch a flat palm to their torso"
+    ]
+    their_requirements = [
+        "are standing, crouching, or off balance"
+    ]
+    your_effects = {
+        "senses": +1,
+        "oxygen": +1,
+    }
+    their_effects = {
+        "blood": +1,
+    }
+    extra_effects = (
+        "If they are off balance,\nmove them to a prone position."
+    )
+    flavor_text = (
+        '"Obstacles cannot crush me;\n'
+        'every obstacle yields to stern resolve"\n'
+        '~ Leonardo Da Vinci'
     )
 
 class Movement(Card, ABC):
@@ -1307,7 +1311,7 @@ class Movement(Card, ABC):
     pass
 class TuckJump(Movement):
     your_requirements = [
-        "lift both feet above knee-level"
+        "lift both feet above knee‑level"
     ]
     your_effects = {
         "oxygen": -1,
@@ -1325,7 +1329,7 @@ class HighJump(Movement):
         "stamina": -1,
     }
     extra_effects = (
-        "Move your hips a limb-length in any direction"
+        "Move your hips a limb‑length in any direction"
     )
     flavor_text = (
         '"What we do in life echoes in eternity." ~ Maximus'
@@ -1344,7 +1348,7 @@ class Spin(Movement):
         '''"There's 3 things in life that excite me. A woman, of course.\n'''
         '''Dinosaurs, and the violence of the Octagon" - Georges St-Pierre'''
     )
-class KickAwway(Movement):
+class KickBack(Movement):
     your_requirements = [
         "are crouching, sitting, or prone",
         "touch a foot to their torso",
@@ -1354,11 +1358,10 @@ class KickAwway(Movement):
         "stamina": +1,
     }
     extra_effects = (
-        "Move your hips a limb-length away"
+        "Move your hips a limb‑length away"
     )
     flavor_text = (
-        '"A goal is not always meant to be reached, '
-        'it often serves simply as something to aim at." ~ Bruce Lee'
+        '"A warrior never worries about his fear." ~ Carlos Castaneda'
     )
 class KipUp(Movement):
     your_requirements = [
@@ -1372,10 +1375,11 @@ class KipUp(Movement):
         "focus": +1,
     }
     extra_effects = (
-        "Move your hips a limb-length up, keeping your feet on the ground"
+        "Move your hips a limb‑length up, keeping your feet on the ground"
     )
     flavor_text = (
-        '"The spirit of a warrior never breaks, it only bends." ~ Sable Nightshade*'
+        '"The spirit of a warrior never breaks, it only bends."'
+        '\n~ Sable Nightshade*'
     )
 
 class Reaction(Card, ABC):
@@ -1398,7 +1402,7 @@ class CatchPunch(Reaction):
         "Negate their card's effects on you"
     )
     flavor_text = (
-        '"Conceive. Believe. Achieve. Shut the fuck up!" ~ Buddeh Bisping'
+        '"Conceive. Believe. Achieve. Shut the fuck up!"\n~ Buddeh Bisping'
     )
 class UkeBlock(Reaction):
     your_requirements = [
@@ -1415,8 +1419,8 @@ class UkeBlock(Reaction):
         "Negate their card's effects on you"
     )
     flavor_text = (
-        '"Be not ashamed of mistakes and thus make them crimes." '
-        '~ Confucius'
+        '''"Its tough to get up and fight\n'''
+        '''if you've been sleeping in silk pajamas." ~ Marvin Hagler'''
     )
 class FirmRepost(Reaction):
     your_requirements = [
@@ -1457,7 +1461,7 @@ class GetThereFirst(Reaction):
     )
 class RetreatingShrimp(Reaction):
     your_requirements = [
-        "prone"
+        "are prone"
     ]
     their_requirements = [
         "are grappling you"
@@ -1466,11 +1470,12 @@ class RetreatingShrimp(Reaction):
         "stamina": +1,
     }
     extra_effects = (
-        "Move your hips a limb-length away"
+        "Move your hips a limb‑length away"
     )
     flavor_text = (
-        '"Notice that the stiffest tree is most easily cracked, '
-        'while the bamboo or willow survives by bending with the wind." ~ Bruce Lee'
+        '"Notice that the stiffest tree is most easily cracked,\n'
+        'while the bamboo or willow survives by bending with the wind."\n'
+        '~ Bruce Lee'
     )
 class ChinUp(Reaction):
     their_requirements = [
@@ -1485,7 +1490,7 @@ class ChinUp(Reaction):
         "rage": +1
     }
     flavor_text = (
-        '"Do not pray for an easy life, '
+        '"Do not pray for an easy life,\n'
         'pray for the strength to endure a difficult one." ~ Bruce Lee'
     )
 class SharpInhale(Reaction):
@@ -1499,7 +1504,7 @@ class SharpInhale(Reaction):
         "rage": +1
     }
     flavor_text = (
-        '"Life is a fight from the minute you take your first breath '
+        '"Life is a fight from the minute you take your first breath\n'
         'to the moment you exhale your last." ~ Ronda Rousey'
     )
 class ClenchTeeth(Reaction):
@@ -1528,7 +1533,7 @@ class GirdLoins(Reaction):
         "stamina": +1,
     }
     flavor_text = (
-        '"Not. Good" ~ FarFar Karlsson'
+        '"Not. Good." ~ FarFar Karlsson'
     )
 class FlowLikeWater(Reaction):
     their_requirements = [
@@ -1580,7 +1585,7 @@ class DragNails(Reaction):
         "stamina": -1,
     }
     flavor_text = (
-        '"Victory is reserved for those who are willing to pay its price." '
+        '"Victory is reserved for those who are willing to pay its price."\n'
         '~ Sun Tzu'
     )
 # Responses to poses/psych outs
@@ -1594,7 +1599,8 @@ class KnowingSmirk(Reaction):
         "focus": -2,
     }
     flavor_text = (
-        '"All types of knowledge, ultimately mean self-knowledge." ~ Bruce Lee'
+        '"All types of knowledge, ultimately mean self-knowledge."'
+        '\n~ Bruce Lee'
     )
 class CatchBreath(Reaction):
     their_requirements = [
@@ -1607,7 +1613,7 @@ class CatchBreath(Reaction):
         "focus": +1
     }
     flavor_text = (
-        '"Absorb what is useful, discard what is not, '
+        '"Absorb what is useful, discard what is not,\n'
         'add what is uniquely your own." ~ Bruce Lee'
     )
 class DeflatingGlare(Reaction):
@@ -1619,7 +1625,7 @@ class DeflatingGlare(Reaction):
         "stamina": -2
     }
     flavor_text = (
-        '"Why would I hold him down when I can just stare him down?" ~ Hendo'
+        '"Why would I hold him down\nwhen I can just stare him down?" ~ Hendo'
     )
 
 class Rule(Card, ABC):
@@ -1641,8 +1647,8 @@ class ContactRules(Rule):
         "Most cards require some kind of contact. smack/smash require that "
         "the limb has moved during this turn to get to it's destination:"
         "<hr>"
-        "smack - moved at least a forearm-length\n"
-        "smash - moved at least a limb-length \n"
+        "smack - moved at least a forearm‑length\n"
+        "smash - moved at least a limb‑length \n"
     )
 class SwitchGrip(Rule):
     your_effects = {
@@ -1658,25 +1664,25 @@ class KeepBreathing(Rule):
         "At the start of your turn,\n"
         "gain focus and stamina from your stance:<hr>"
     ) + "<hr>".join(s.get_description() for s in Card.stances.values())
-class YourHealth(Rule):
-    extra_effects = (
-        "Place a d6 to keep track of each of your statuses.\n"
-        "They cannot go above 6.\n"
-        "If they ever go below 1, draw the loss card to see how the fight ends"
-    )
-class ZZTest(Rule):
-    your_requirements = [
-        "smash a foot into their neck",
-        ">2 oxygen",
-        ">3 oxygen",
-        ">4 oxygen",
-        ">5 oxygen",
+# class YourHealth(Rule):
+#     extra_effects = (
+#         "Place a d6 to keep track of each of your statuses.\n"
+#         "They cannot go above 6.\n"
+#         "If they ever go below 1, draw the loss card to see how the fight ends"
+#     )
+# class ZZTest(Rule):
+#     your_requirements = [
+#         "smash a foot into their neck",
+#         ">2 oxygen",
+#         ">3 oxygen",
+#         ">4 oxygen",
+#         ">5 oxygen",
 
-        "<3 focus",
-        "<4 focus",
-        "<5 focus",
-        "<6 stamina",
-    ]
+#         "<3 focus",
+#         "<4 focus",
+#         "<5 focus",
+#         "<6 stamina",
+#     ]
 
 # Card ideas:
 """
@@ -1684,24 +1690,12 @@ Feint
 Taunt - raise their rage. If high enough, they 'red out' and...
 focus drops to 2?
 'float' - move out of the way when they smack/smash, negate
+drunken master - bonus for being off balance
+crush windpipe - mix of throat punch and thumb strangle, like clinch punch
+judo flip - control reaction
+
+Would introduce 'card meta stuff' - but I have some interest in
+'reveal X cards to player' as a way of 'being predictable',
+but also players could use to trick/feint.
 ...
-"""
-
-# Unused flavor text:
-"""
-
-
-"""
-
-"""
-Your head tips back, then rushes
-at the opportunity to lie back.
-You have no say in the matter
-
-
-Laying on your side, you look up
-for a moment at the silhouette
-towering over you.
-You can't see their face,
-but you feel the pity and disgust nonetheless.
 """

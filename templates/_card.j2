@@ -15,7 +15,9 @@
             {% endif %}
         </div>
         {% if short_desc %}
-            <img src="images/{{ card_type.name }}.png" class="card-image">
+            <div style="width: 100%; overflow: hidden;">
+                <img src="images/{{ card_type.name }}.png" class="card-image">
+            </div>
         {% else %}
             <div style="height: 3.7em"></div>
         {% endif %}
@@ -23,5 +25,8 @@
             <span class='{{cat.lower()}} card-desc'>{{desc}} </span>
         </div>
         <div class="card-footer">{{ card_type.flavor_text }}</div>
+        {# {% if card_type.is_real() %}
+            <span class="card-index"> {{ card_type.index }}/100 </span>
+        {% endif %} #}
     </div>
 {% endmacro %}
