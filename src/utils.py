@@ -26,11 +26,30 @@ def status_requirement(s):
     for status in status_order:
         if status not in s:
             continue
-        gtlt = ">" if ">" in s else "<"
+        gtlt = ">=" if ">=" in s else "<="
         # First character after > or <:
-        value = s.split(">")[-1].split("<")[-1][0]
+        value = s.split(">=")[-1].split("<=")[-1][0]
         return status, gtlt, int(value)
     return None
+
+def replace_status_requirement(r):
+    # If there is a >= or <= requirement for status,
+    # use the pretty colors
+
+    # Split on both 'and' and 'or'
+    status_parts = [
+        status_requirement(s)
+        for s in r.replace("or", "and").split("and")
+    ]
+    for ret in status_parts:
+        if not ret:
+            continue
+
+        status, gtlt, value = ret
+        replace_item = (status, f"{gtlt}{value}")
+        replace = status_string(replace_item)
+        r = re.sub(rf'....{status}', replace, r)
+    return r
 
 def status_string(item, remove_zero=False):
     # Simple helper function for +1/-1, etc
@@ -96,8 +115,6 @@ def get_cost_from_menu(menu, source):
                 pertinent_costs[matched_part] = cost
 
     return pertinent_costs
-
-
 
 def binomial_coefficient(total, choose):
     return
@@ -188,3 +205,10 @@ class NamedClass(metaclass=CombinedNameMeta):
         # Register each subclass in the all_cards dictionary
         cls.all_named_types[cls.__name__] = cls
         # TODO check for conflict here
+
+
+if __name__ == '__main__':
+    # Some sanity checks
+    exp = "<span class='rage status'>>=3 rage</span>"
+    got = replace_status_requirement(">=3 rage")
+    assert got == exp, f"{got} != {exp}"

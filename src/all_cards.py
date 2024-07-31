@@ -743,7 +743,7 @@ class BobAndWeave(PsychOut):
     your_requirements = [
         "standing or crouching",
         "both hands are fists",
-        "have >3 focus",
+        "have >=4 focus",
         "your torso was moved this turn",
     ]
     your_effects = {
@@ -762,7 +762,7 @@ class SubtleTaunt(PsychOut):
         "touch one hand to your hip",
     ]
     their_requirements = [
-        "have >3 rage",
+        "have >=4 rage",
     ]
     your_effects = {
         "senses": +1,
@@ -782,7 +782,7 @@ class GoadingChin(PsychOut):
         "have both hands on-level or below their elbow",
     ]
     their_requirements = [
-        "have >4 rage",
+        "have >=5 rage",
     ]
     your_effects = {
         "stamina": +1,
@@ -796,10 +796,10 @@ class GoadingChin(PsychOut):
     )
 class HurlObsecenites(PsychOut):
     your_requirements = [
-        "have >3 oxygen"
+        "have >=4 oxygen"
     ]
     their_requirements = [
-        "have <5 dignity"
+        "have <=4 dignity"
     ]
     your_effects = {
         "rage": +1,
@@ -814,10 +814,10 @@ class HurlObsecenites(PsychOut):
     )
 class OpenlyJeer(PsychOut):
     your_requirements = [
-        "have >3 rage and >3 blood",
+        "have >=4 rage and >=4 blood",
     ]
     their_requirements = [
-        "have >3 rage"
+        "have >=4 rage"
     ]
     your_effects = {
         "senses": +1,
@@ -834,7 +834,7 @@ class OpenlyJeer(PsychOut):
 class SternWord(PsychOut):
     your_requirements = [
         "touch a grasp hand to their arm",
-        "have >3 dignity"
+        "have >=4 dignity"
     ]
     your_effects = {
         "focus": +1
@@ -848,7 +848,7 @@ class SternWord(PsychOut):
     )
 class SnideSnort(PsychOut):
     your_requirements = [
-        "have >3 rage"
+        "have >=4 rage"
     ]
     your_effects = {
         "blood": +1,
@@ -932,7 +932,7 @@ class LowSprawl(Pose):
     )
 class Zenkutsu(Pose):
     your_requirements = [
-        "are crouching, with feet spaced > a limb-length apart",
+        "are crouching, with feet spaced >= a limb-length apart",
         "have both hands between your waist-height and chest-height",
     ]
     your_effects = {
@@ -988,7 +988,7 @@ class RawHowl(Pose):
 class GutteralSob(Pose):
     your_requirements = [
         "are crouching, sitting, prone, or off balance",
-        "have >2 oxygen",
+        "have >=3 oxygen",
     ]
     your_effects = {
         "blood": +1,
@@ -1001,7 +1001,7 @@ class SlowBreathing(Pose):
     your_requirements = [
         "are standing or crouching",
         "touch one hand to your chest",
-        "have >3 oxygen",
+        "have >=4 oxygen",
     ]
     your_effects = {
         "focus": +1,
@@ -1018,7 +1018,7 @@ class LionsBreath(Pose):
         return "Lion's Breath"
 
     your_requirements = [
-        "have >4 oxygen",
+        "have >=5 oxygen",
     ]
     your_effects = {
         "rage": +1,
@@ -1076,7 +1076,7 @@ class FetalCurl(Pose):
 class StayDown(Pose):
     your_requirements = [
         "are prone",
-        "have <4 blood or <4 pain tolerance"
+        "have <=3 blood or <=3 pain tolerance"
     ]
     your_effects = {
         "stamina": +1,
@@ -1104,8 +1104,8 @@ class CoverUp(Pose):
 class StayGrounded(Pose):
     your_requirements = [
         "are standing or crouching",
-        "have <5 rage",
-        "have >2 focus",
+        "have <=4 rage",
+        "have >=3 focus",
     ]
     your_effects = {
         "pain tolerance": +1,
@@ -1118,7 +1118,7 @@ class StayGrounded(Pose):
     )
 class BodyScan(Pose):
     your_requirements = [
-        "have >4 focus",
+        "have >=5 focus",
         "you and them are not touching",
     ]
     your_effects = {
@@ -1131,8 +1131,8 @@ class BodyScan(Pose):
     )
 class ShareAir(Pose):
     your_requirements = [
-        "have <5 rage and >2 dignity",
-        "your torso is < a forearm-length from theirs",
+        "have <=4 rage and >=3 dignity",
+        "your torso is <= a forearm-length from theirs",
     ]
     your_effects = {
         "focus": +1,
@@ -1212,7 +1212,7 @@ class ChokeSlam(Control):
     your_requirements = [
         "are standing",
         "touch a grasp hand to their neck",
-        "have >3 stamina"
+        "have >=4 stamina"
     ]
     their_effects = {
         "oxygen": -1,
@@ -1228,7 +1228,7 @@ class ChokeSlam(Control):
     )
 class LeapingTackle(Control):
     your_requirements = [
-        "are crouching and have >3 stamina",
+        "are crouching and have >=4 stamina",
         "have both grasp hands infront of your chest",
     ]
     your_effects = {
@@ -1566,7 +1566,7 @@ class FlowLikeWater(Reaction):
     )
 class AnalyticReappraisal(Reaction):
     your_requirements = [
-        "have <4 pain tolerance"
+        "have <=3 pain tolerance"
     ]
     their_requirements = [
         "are smack/smashing you"
@@ -1633,7 +1633,7 @@ class CatchBreath(Reaction):
 class DeflatingGlare(Reaction):
     their_requirements = [
         "are posing or psyching you out",
-        "they will have >3 stamina"
+        "they will have >=4 stamina"
     ]
     their_effects = {
         "stamina": -2
@@ -1687,15 +1687,17 @@ class KeepBreathing(Rule):
 # class ZZTest(Rule):
 #     your_requirements = [
 #         "smash a foot into their neck",
-#         ">2 oxygen",
-#         ">3 oxygen",
-#         ">4 oxygen",
-#         ">5 oxygen",
+#         ">=2 oxygen",
+#         ">=3 oxygen",
+#         ">=4 oxygen",
+#         ">=5 oxygen",
+#         ">=6 oxygen",
 
-#         "<3 focus",
-#         "<4 focus",
-#         "<5 focus",
-#         "<6 stamina",
+#         "<=2 focus",
+#         "<=3 focus",
+#         "<=4 focus",
+#         "<=5 focus",
+#         "<=6 focus",
 #     ]
 
 # Card ideas:

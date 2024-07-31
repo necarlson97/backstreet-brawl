@@ -121,8 +121,8 @@ h2 {
 }
 
 .card {
-    width: 6.2cm;
-    height: 8.7cm;
+    width: calc(6.2cm + 0.1cm);
+    height: calc(8.7cm + 0.1cm);
     border: .4em solid var(--subtle-light);
     border-radius: .5em;
     overflow: hidden;

@@ -4,7 +4,8 @@ import re
 import random
 
 from src.utils import (
-    NamedClass, status_string, get_cost_from_menu, status_requirement, status_order
+    NamedClass, status_string, get_cost_from_menu,
+    status_requirement, status_order, replace_status_requirement
 )
 
 import logging
@@ -38,7 +39,7 @@ class Card(NamedClass):
 
     # Fist smash knee, flat palm smack face, butt below hands, etc
     your_requirements = []
-    # Prone, >2 rage, etc
+    # Prone, >=2 rage, etc
     their_requirements = []
 
     # The different states the body can be in, and how much stamina each state
@@ -233,11 +234,11 @@ class Card(NamedClass):
                 if not ret:
                     continue
                 status, gtlt, value = ret
-                # Should lower costs if it is 'hard' e.g, >5
-                cost = -value / 2
-                # If it is < then lower is harder
-                if "<" in gtlt:
-                    cost = -4 + (value / 2)
+                # Should lower costs if it is 'hard' e.g, >=5
+                cost = (-value + 1) / 2
+                # If it is <= then lower is harder
+                if "<=" in gtlt:
+                    cost = -4 + ((value + 1) / 2)
                 dikt[f"{person} need {gtlt}{value} {status}"] = cost
 
         other_requrements = {
@@ -315,25 +316,6 @@ class Card(NamedClass):
         """
         Return the html str of this cards description
         """
-        def replace_status_requirement(r):
-            # If there is a > or < requirement for status,
-            # use the pretty colors
-
-            # Split on both 'and' and 'or'
-            status_parts = [
-                status_requirement(s)
-                for s in r.replace("or", "and").split("and")
-            ]
-            for ret in status_parts:
-                if not ret:
-                    continue
-
-                status, gtlt, value = ret
-                replace_item = (status, f"{gtlt}{value}")
-                replace = status_string(replace_item)
-                r = re.sub(rf'...{status}', replace, r)
-            return r
-
         parsed_your_reqs = [
             replace_status_requirement(r) for r in cls.your_requirements
         ]
