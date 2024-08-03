@@ -1325,7 +1325,8 @@ class TuckJump(Movement):
     ]
     your_effects = {
         "oxygen": -1,
-        "stamina": +1
+        "stamina": +1,
+        "senses": +1,
     }
     flavor_text = (
         '"Take no thought of who is right or wrong or who is better than. '
@@ -1663,6 +1664,8 @@ class ContactRules(Rule):
         "<hr>"
         "smack - moved at least a forearm-length\n"
         "smash - moved at least a limb-length \n"
+        "<i class='reminder'>a smack/smash can only be 'claimed' on one card,\n"
+        "i.e, you can't simultaneously Knuckle Strike and Bloody Nose.</i>"
     )
 class SwitchGrip(Rule):
     your_effects = {
@@ -1677,7 +1680,44 @@ class KeepBreathing(Rule):
     extra_effects = (
         "At the start of your turn,\n"
         "gain focus and stamina from your stance:<hr>"
-    ) + "<hr>".join(s.get_description() for s in Card.stances.values())
+        f"{'<hr>'.join(s.get_description() for s in Card.stances.values())}"
+        "<hr><i class='reminder'> Whenever a pose is could be multiple,\n"
+        "the card-player can choose which.</i>"
+    )
+class FightIgnition(Rule):
+    from src.anubis import Anubis
+    extra_effects = f"""
+        <b> To start playing: </b>
+        * Each player draws <b>{Anubis.draw_size}</b> Action Cards
+        * Each player lays, face down, one of each Loss Card (8 total)
+        * Place a d6 on each Loss Card, each starting at <b>6</b>
+        * Lay out these <b>Rule</b> reminder cards on the table
+        * Place the figures in their stand, upright,
+        with hands/arms however you like.
+        <i class='reminder'> Whichever player has the biggest bruise goes first.
+        If neither is bruised, whomever bled last. </i>
+        """
+class YourTurn(Rule):
+    from src.anubis import Anubis
+    extra_effects = f"""
+        <b> Start your turn: </b>
+        * Draw until you have <b>{Anubis.draw_size}</b> cards
+        * Check <b>Keep Breathing</b> to see how much stamina/focus you recover
+        * If you are airborne, move downwards until some part of you touches the ground
+        <i class='reminder'>You can, however, be airborne during and after your turn
+        (and thus during your opponent's)</i>
+        <hr><b> During your turn: </b>
+        * Use stamina/focus to <b>Move Limb</b>s/<b>Switch Grip</b>
+        * Play as many cards as you like
+        * Discard any you don't want
+        <hr><b> During theirs: </b>
+        * <b>Reaction</b> cards are played in response to an opponent's card
+        <i class='reminder'> Some may require you to <b>Move Limb</b>s/<b>Switch Grip</b>
+        - which still costs stamina/focus. </i>
+        <hr> Stats cannot be raised above <b>6</b>
+        Fight ends when any status is reduced to <b class='minus'>0</b>:
+        Flip over that Loss Card, and read out your defeat.
+    """
 # class YourHealth(Rule):
 #     extra_effects = (
 #         "Place a d6 to keep track of each of your statuses.\n"
@@ -1738,5 +1778,7 @@ Exhilarating Stamina: nothing
 Could rename 'vasoconstrict' something more lkke
 'draw blood to core' -but vaso sounds coool
 
-You know, I kinda want to replace all < with <=
+Could add a thing to reaction cards that require movement that is like:
+'You may play <b>Move Limb</b>/<b>Switch Grip</b>',
+then have the requirements more 'normally'
 """

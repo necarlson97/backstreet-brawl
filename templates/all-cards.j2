@@ -2,16 +2,25 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="dark-mode-toggle.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <button id="dark-toggle">🌞</button>
+    <button onclick="$('#stay-with').toggle();">Toggle Tips </button>
     {% from "_card.j2" import build_card %}
+
+    <h2> {{Card.reprints()|length}} Reprints </h2>
+    <div class="cards-container page-break">
+        {% for card_type in Card.reprints() %}
+            {% for i in range(card_type.count) %}
+                {{  build_card(card_type, i+1) }}
+            {% endfor %}
+        {% endfor %}
+    </div>
 
     <h2> All {{Card.sorted_types()|length}} Cards </h2>
     <div class="cards-container">
@@ -58,49 +67,13 @@
         <h2> Part Totals </h2>
         <div class="col-info">{{ Anubis.part_totals() }}</div>
 
-        <div class="stay-with">
+        <div id="stay-with" style="display: none;">
             <div class="col-info">{{ best_info }}</div>
             <div class="col-info">{{ detailed_info }}</div>
         </div>
     </div>
 
     <div style="white-space: pre-line;" class="no-print">
-        <h1> Backstreet Brawl </h1>
-        Whatever was said, it doesn't matter now.
-        What matters is throwing fists. And winning.
-
-        <h2> Start </h2>
-        Each player gets their 8 Loss cards, one of each type, and lays them face down infront of them. Place a d6, with the '6' upwards, on the back of each Loss card. This is your current health, how much blood you have, how much oxygen, etc. Ensure they are visible to all.
-
-        Each player draws {{ Anubis.draw_size }} action cards.
-        Place your figure in the stand, upright.
-        (You can have their hands/arms however you like)
-        Lay out the rule-reminder cards (Keep Breathing, Switch Grip, etc)
-
-        Whichever player has a bigger bruise goes first.
-        If neither is bruised, whoever bled last.
-
-        <h2> Turns </h2>
-        On your turn, you will:
-        * Make as many
-
-
-        <h3> At the start of your turn: </h3>
-        <ul>
-            draw cards until you have {{ Anubis.draw_size }}.
-        </ul>
-        <ul>
-            Check <b>Keep Breathing</b> to see how much stamina/focus you recover.
-        </ul>
-        <ul>
-            if you are airborne, move yourself downwards until some part of you touches the ground.
-        </ul>
-        You can, however, be airborne during and at the end of your turn (and thus during your opponents turn).
-
-        During your turn, you play as many cards as you like, and can simply discard any you don't want.
-
-        If you have a <b> Reaction </b> card, you can play it during your opponents turn. They may require you to see if you can move a limb to block - you still have to spend stamina on this. If you can't complete that requirement, move the limb you tried back to where it was, and put the reaction back in your hand.
-
         You can be in multiple stances at once, e.g.: a low squat could be 'crouching' or 'sitting'.
         This means you can play cards that apply to either.
         (For something like 'Keep Breathing', you can choose the better stance, but not stack multiple.)

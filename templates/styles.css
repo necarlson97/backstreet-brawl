@@ -31,7 +31,7 @@
 .pain { color: #C95D63; }
 .senses { color: #17BEBB }
 
-.status .minus {color: red; }
+.minus {color: red; }
 .status .plus {color: green; }
 .status .zero {color: gray; }
 
@@ -69,7 +69,7 @@ Unused colors:
 .col-info .plus {
     text-decoration: underline red;
 }
-.stay-with {
+#stay-with {
     position: fixed;
     right: 1em;
     bottom: 1em;
@@ -85,7 +85,7 @@ Unused colors:
   --bg: white;
 }
 
-#dark-toggle {
+#dark-toggle, button {
     border-radius: 1em;
     display: inline;
 }
@@ -95,9 +95,10 @@ Unused colors:
         --bg: white;
     }
 
-    #dark-toggle, .no-print {
+    #dark-toggle, .no-print, button {
         display: none;
     }
+
 }
 
 
@@ -269,11 +270,6 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
     background-color: var(--bg);
-}
-
-
-.page-break {
-    display: none;
 }
 
 @media print {

@@ -219,12 +219,15 @@ class Card(NamedClass):
         # If extra costs has a requirement...
         # TODO just considers stance, should break out entire req check into
         # separate function, than call here.
-        if 'if' in cls.extra_effects.lower():
-            extra_req, _ = cls.extra_effects.lower().split(',')
-            add_to_cost(
-                dikt, {k: -v.rarity for k, v in cls.stances.items()},
-                extra_req, key_add="extra req"
-            )
+        if all(s in cls.extra_effects.lower() for s in [',', 'if ']):
+            try:
+                extra_req, _ = cls.extra_effects.lower().split(',')
+                add_to_cost(
+                    dikt, {k: -v.rarity for k, v in cls.stances.items()},
+                    extra_req, key_add="extra req"
+                )
+            except ValueError:
+                print(f"Couldn't split {cls.extra_effects.lower()}")
 
         def check_status_cost(r, person="you"):
             # Helper for adding/subtracting cost for my/their status costs
@@ -244,7 +247,7 @@ class Card(NamedClass):
         other_requrements = {
             "not touching": -0.5,
             "was moved": -1,
-            "on-level": -0.5,
+            "-level": -0.5,
         }
         for r in cls.your_requirements:
             check_status_cost(r)
@@ -419,5 +422,13 @@ class Card(NamedClass):
 
     @classmethod
     def reprints(cls):
+        from src.all_cards import (
+            TuckJump, ContactRules, FightIgnition, YourTurn, KeepBreathing
+        )
         return {
+            TuckJump,
+            ContactRules,
+            FightIgnition,
+            YourTurn,
+            KeepBreathing,
         }

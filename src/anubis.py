@@ -220,7 +220,7 @@ class Anubis():
                 if part in card.get_description()
             )
 
-        parts = Card.strike_targets.keys() | Card.hands
+        parts = sorted(list(Card.strike_targets.keys() | Card.hands))
         totals = {
             part: count_part(part) for part in parts
         }
