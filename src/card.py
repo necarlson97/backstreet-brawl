@@ -423,12 +423,8 @@ class Card(NamedClass):
     @classmethod
     def reprints(cls):
         from src.all_cards import (
-            TuckJump, ContactRules, FightIgnition, YourTurn, KeepBreathing
+            TuckJump, ContactRules, FightIgnition, YourTurn, KeepBreathing,
+            LegLock,
         )
         return {
-            TuckJump,
-            ContactRules,
-            FightIgnition,
-            YourTurn,
-            KeepBreathing,
         }

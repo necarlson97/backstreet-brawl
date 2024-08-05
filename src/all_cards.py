@@ -1687,12 +1687,12 @@ class KeepBreathing(Rule):
 class FightIgnition(Rule):
     from src.anubis import Anubis
     extra_effects = f"""
-        <b> To start playing: </b>
-        * Each player draws <b>{Anubis.draw_size}</b> Action Cards
-        * Each player lays, face down, one of each Loss Card (8 total)
-        * Place a d6 on each Loss Card, each starting at <b>6</b>
-        * Lay out these <b>Rule</b> reminder cards on the table
-        * Place the figures in their stand, upright,
+        Lay out these <b>Rule</b> reminder cards on the table
+        <b> To start playing, each player should: </b>
+        * Draw <b>{Anubis.draw_size}</b> Action Cards
+        * Lay, face down, one of each Loss Card (8 total)
+        * Place a d6 on each Loss Card, all starting at <b>6</b>
+        * Place your figure in the stand, upright,
         with hands/arms however you like.
         <i class='reminder'> Whichever player has the biggest bruise goes first.
         If neither is bruised, whomever bled last. </i>
@@ -1709,8 +1709,8 @@ class YourTurn(Rule):
         <hr><b> During your turn: </b>
         * Use stamina/focus to <b>Move Limb</b>s/<b>Switch Grip</b>
         * Play as many cards as you like
-        * Discard any you don't want
         <hr><b> During theirs: </b>
+        * Discard any cards you don't want
         * <b>Reaction</b> cards are played in response to an opponent's card
         <i class='reminder'> Some may require you to <b>Move Limb</b>s/<b>Switch Grip</b>
         - which still costs stamina/focus. </i>
@@ -1757,10 +1757,9 @@ but also players could use to trick/feint.
 ...
 
 Revisit stats:
-headbutts can take up some of the -senses to player
-maybe control cards give +oxy to enemy, because it takes a second to judo flip?
-Maybe basic attacks can give +1 focus
-How we doing on categories
+I think we need closer to -20 on dignity/rage. They can be harder to
+win with than oxy/blood/etc - but I think it is currently too hard at -10ish.
+Maybe just boost to more +2/-2 to make it more risk/reward?
 ...
 
 TODO could have a card that is like
@@ -1774,6 +1773,8 @@ Maddening Rage: focus -1
 Haughty Dignity: blood -1
 Hyper-focused: rage -1, dignity +1
 Exhilarating Stamina: nothing
+TODO actually - these could be more 'meta' things rather than simple stat changes.
+E.g.: Reveal 4 cards to the enemy, draw a card, discard, etcs
 
 Could rename 'vasoconstrict' something more lkke
 'draw blood to core' -but vaso sounds coool

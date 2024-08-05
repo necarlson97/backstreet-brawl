@@ -13,14 +13,18 @@
     <button onclick="$('#stay-with').toggle();">Toggle Tips </button>
     {% from "_card.j2" import build_card %}
 
-    <h2> {{Card.reprints()|length}} Reprints </h2>
-    <div class="cards-container page-break">
-        {% for card_type in Card.reprints() %}
-            {% for i in range(card_type.count) %}
-                {{  build_card(card_type, i+1) }}
+    {%  if Card.reprints() %}
+        <h2> {{Card.reprints()|length}} Reprints </h2>
+        <div class="cards-container page-break">
+            {% for card_type in Card.reprints() %}
+                {% for i in range(card_type.count) %}
+                    {{  build_card(card_type, i+1) }}
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-    </div>
+        </div>
+        <div style="height: 4cm"></div>
+    {% endif %}
+
 
     <h2> All {{Card.sorted_types()|length}} Cards </h2>
     <div class="cards-container">
@@ -74,10 +78,6 @@
     </div>
 
     <div style="white-space: pre-line;" class="no-print">
-        You can be in multiple stances at once, e.g.: a low squat could be 'crouching' or 'sitting'.
-        This means you can play cards that apply to either.
-        (For something like 'Keep Breathing', you can choose the better stance, but not stack multiple.)
-
         (If you are playing against multiple opponents, and play a psych out or other card without an obvious target, you can choose.)
     </div>
 

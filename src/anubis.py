@@ -169,15 +169,15 @@ class Anubis():
         reccomendations = {
             "Need more": need_more,
             "Not enough minus on them":
-                {k: v for k, v in their_minus.items() if v > -6},
+                {k: v for k, v in their_minus.items() if v > 3*-cls.draw_size},
             "Not enough minus on you":
-                {k: v for k, v in your_minus.items() if v > -3},
+                {k: v for k, v in your_minus.items() if v > -cls.draw_size},
             "Too much plus on you":
-                {k: v for k, v in your_plus.items() if v > 15},
+                {k: v for k, v in your_plus.items() if v > 2*cls.draw_size},
             "Not enough pluses on you":
-                {k: v for k, v in your_plus.items() if v < 6},
+                {k: v for k, v in your_plus.items() if v < cls.draw_size},
             "Not enough pluses on them":
-                {k: v for k, v in their_plus.items() if v < 3},
+                {k: v for k, v in their_plus.items() if v < cls.draw_size},
         }
 
 
