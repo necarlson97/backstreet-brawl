@@ -422,6 +422,10 @@ class Card(NamedClass):
 
     @classmethod
     def reprints(cls):
+        """
+        If you just need to print a few more, you can list there
+        names here
+        """
         from src.all_cards import (
             TuckJump, ContactRules, FightIgnition, YourTurn, KeepBreathing,
             LegLock,
