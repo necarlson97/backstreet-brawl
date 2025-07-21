@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="dark-mode-toggle.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button id="dark-toggle">🌞</button>
+    <button onclick="$('#stay-with').toggle();">Toggle Tips </button>
+    {% from "_card.j2" import build_card %}
+
+    <div class="cards-container">
+        {% for card_type in Card.rule_cards() %}
+            {% for i in range(card_type.count) %}
+                {{  build_card(card_type, i+1) }}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <script>
+        function adjustLines(ele) {
+            const lines = ele.innerHTML.split('\n');
+            const adjustedLines = lines.map(line => {
+                if (line.trim() === '') {
+                    return '<div class="blank-line"></div>';
+                } else {
+                    return "<div>"+line.trim()+"</div>";
+                }
+            });
+
+            ele.innerHTML = adjustedLines.join('');
+        }
+        // change size of just the totally blank lines in desc
+        document.addEventListener("DOMContentLoaded", function() {
+            const elements = document.querySelectorAll(
+                '.loss.card-desc');
+            elements.forEach(ele => adjustLines(ele));
+        });
+    </script>
+
+</body>
+</html>

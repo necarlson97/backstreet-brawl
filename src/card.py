@@ -413,6 +413,13 @@ class Card(NamedClass):
         return cls.get_category() not in ["Rule", "Loss"]
 
     @classmethod
+    def rule_cards(cls):
+        return [
+            ct for ct in cls.all_types.values()
+            if ct.get_category() in ['Rule']
+        ]
+
+    @classmethod
     def get_hand(cls):
         from src.anubis import Anubis
         return [
