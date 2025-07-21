@@ -3,11 +3,8 @@
 <head>
     {% include "_head.j2" %}
 </head>
+{% from "_card.j2" import build_card %}
 <body>
-    <button id="dark-toggle">🌞</button>
-    <button onclick="$('#stay-with').toggle();">Toggle Tips </button>
-    {% from "_card.j2" import build_card %}
-
     <div class="cards-container">
         {% for card_type in Card.rule_cards() %}
             {% for i in range(card_type.count) %}
