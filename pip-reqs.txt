@@ -1,4 +1,6 @@
 Jinja2
 openai
+html2image
+pillow
 
 # Also inotify-tools if you want to watch & regen printout on changes

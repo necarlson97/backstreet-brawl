@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="file://{{ cwd }}/templates/">
+  {% include "_head.j2" %}
+</head>
+
+  <body style="margin: 0px;">
+    {% from "_card.j2" import build_card %}
+    <div class="cards-container">
+      {{ build_card(card_type, i) }}
+    </div>
+  </body>
+</html>
