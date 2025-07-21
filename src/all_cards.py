@@ -1645,7 +1645,9 @@ class DeflatingGlare(Reaction):
 
 class Rule(Card, ABC):
     flavor_text = ""
+    order = 100
 class MoveLimb(Rule):
+    order = 3
     your_effects = {
         "stamina": -1,
     }
@@ -1658,6 +1660,7 @@ class MoveLimb(Rule):
         "You can play it multiple times a turn"
     )
 class ContactRules(Rule):
+    order = 5
     extra_effects = (
         "Most cards require some kind of contact. smack/smash require that "
         "the limb has moved during this turn to get to it's destination:"
@@ -1668,6 +1671,7 @@ class ContactRules(Rule):
         "i.e, you can't simultaneously Knuckle Strike and Bloody Nose.</i>"
     )
 class SwitchGrip(Rule):
+    order = 4
     your_effects = {
         "focus": -1,
     }
@@ -1677,6 +1681,7 @@ class SwitchGrip(Rule):
         "You can play it multiple times a turn"
     )
 class KeepBreathing(Rule):
+    order = 2
     extra_effects = (
         "At the start of your turn,\n"
         "gain focus and stamina from your stance:<hr>"
@@ -1685,6 +1690,7 @@ class KeepBreathing(Rule):
         "the card-player can choose which.</i>"
     )
 class FightIgnition(Rule):
+    order = 0
     from src.anubis import Anubis
     extra_effects = f"""
         Lay out these <b>Rule</b> reminder cards on the table
@@ -1698,6 +1704,7 @@ class FightIgnition(Rule):
         If neither is bruised, whomever bled last. </i>
         """
 class YourTurn(Rule):
+    order = 1
     from src.anubis import Anubis
     extra_effects = f"""
         <b> Start your turn: </b>

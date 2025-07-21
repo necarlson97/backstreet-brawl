@@ -5,7 +5,7 @@
 </head>
 {% from "_card.j2" import build_card %}
 <body>
-    <div class="cards-container">
+    <div class="cards-container" style="margin: 2em">
         {% for card_type in Card.rule_cards() %}
             {% for i in range(card_type.count) %}
                 {{  build_card(card_type, i+1) }}

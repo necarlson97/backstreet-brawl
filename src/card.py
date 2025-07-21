@@ -414,10 +414,11 @@ class Card(NamedClass):
 
     @classmethod
     def rule_cards(cls):
-        return [
+        return sorted([
             ct for ct in cls.all_types.values()
             if ct.get_category() in ['Rule']
-        ]
+        ], key=lambda ct: ct.order
+        )
 
     @classmethod
     def get_hand(cls):
